@@ -4,8 +4,6 @@ This Edge driver is targeted to users having a DSC security system with an Envis
 
 The typical audiance has an existing solution using the 'Alarmserver' package. Alarmserver is a Python-based program that runs on a LAN-connected computer (often a Raspberry Pi) and connects to an Envisalink module to pass messages back and forth to SmartThings.  However Alarmserver is based on the legacy DTH / SmartApp / graph callback implementation which will be sunset by SmartThings.  This driver provides a migration path for those Alarmserver users and offers a number of additional benefits as outlined below.
 
-Note: SmartThings Edge is still in Beta as of September 2021.
-
 ### Benefits
 - Eliminates dependency on Groovy DTHs, which is being sunset
 - No SmartApp is required
@@ -21,6 +19,12 @@ Note: SmartThings Edge is still in Beta as of September 2021.
 
 ### Migrating from Alarmserver
 This package does not prereq the Alarmserver package.  However if the user already has that running, there is a setup option where you can run both solutions in parallel.  You must be running the latest Alarmserver package from Ralph Torchia (https://github.com/rtorchia/DSC-Envisalink/tree/master/alarmserver), to ensure a functioning proxy server.  Then when configuring the Edge driver per instructions below, you can point the Edge driver to the IP address and port of the Alarmserver proxy server, which will provide a passthrough to the Envisalink.  When you are happy with everything functioning with the new Edge driver configuration, you can change its IP configuration to point directly to the Envisalink device and shutdown Alarmserver.
+
+### Caveats
+- This package should be considered beta-level
+- No testing has been done yet for smoke, carbonmonoxide (co), or water zones (looking for volunteers)
+- No testing has been done yet for multi-partition systems (looking for volunteers)
+- SmartThings Edge is still in beta as of September 2021
 
 ## Setup Instructions
 
