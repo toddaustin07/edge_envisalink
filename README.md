@@ -1,16 +1,18 @@
 # SmartThings Edge Device Driver for DSC/Envisalink
 
-This Edge driver is targeted to users of the 'Alarmserver' package to integrate their DSC security system with Envisalink.  Alarmserver is a Python-based program that runs on a LAN-connected computer (often a Raspberry Pi) and connects to an Envisalink module to pass messages back and forth to SmartThings.
+This Edge driver is targeted to users having a DSC security system with an Envisalink board connecting it to the local LAN.  Edge drivers run directly on a SmartThings hub.  The driver will connect with the Envisalink to create and update devices reflecting your DSC system partition panels and zones.
 
-This driver allows users to eliminate the need to run Alarmserver on a computer and instead provides the same functionality running directly on a SmartThings hub via SmartThings Edge platform.  (Note Edge is still in Beta as of September 2021).
+The typical audiance has an existing solution using the 'Alarmserver' package. Alarmserver is a Python-based program that runs on a LAN-connected computer (often a Raspberry Pi) and connects to an Envisalink module to pass messages back and forth to SmartThings.  However Alarmserver is based on the legacy DTH / SmartApp / graph callback implementation which will be sunset by SmartThings.  This driver provides a migration path for those Alarmserver users and offers a number of additional benefits as outlined below.
+
+Note: SmartThings Edge is still in Beta as of September 2021.
 
 ### Benefits
-- Eliminates dependency on DTHs, which is being sunset
-- No SmartApp required
-- Eliminate need for separate stay / away panel devices
-- Eliminate need for separate computer to run Envisalink interface code
+- Eliminates dependency on Groovy DTHs, which is being sunset
+- No SmartApp is required
+- Eliminates need for separate stay / away panel devices
+- Eliminates need for separate computer to run Envisalink interfacing code
 - Leverages 100% local execution of Edge platform (including related automations)
-- Can be run in parallel with existing Alarmserver setup
+- Can be run in parallel with existing Alarmserver setup for low risk transition
 
 ### Pre-requisites
 - SmartThings hub V2 or later
@@ -18,7 +20,7 @@ This driver allows users to eliminate the need to run Alarmserver on a computer 
 - SmartThings CLI with Edge authorizations (https://github.com/SmartThingsCommunity/smartthings-cli/tree/master/packages/cli#smartthings-devicespresentation-id)
 
 ### Migrating from Alarmserver
-This package does not prereq the Alarmserver package.  However if the user already has that running, there is a setup option where you can run both solutions in parallel.  You must be running the latest Alarmserver package from Ralph Torchia (https://github.com/rtorchia/DSC-Envisalink/tree/master/alarmserver), to ensure a functioning proxy server.  Then when configuring the Edge driver per instructions below, you can point the driver to the IP address and port of the Alarmserver proxy server, which will provide a passthrough to the Envisalink.  When you are happy with everything functioning with the Edge driver, you can change its IP configuration to point directly to the Envisalink device and shutdown Alarmserver.
+This package does not prereq the Alarmserver package.  However if the user already has that running, there is a setup option where you can run both solutions in parallel.  You must be running the latest Alarmserver package from Ralph Torchia (https://github.com/rtorchia/DSC-Envisalink/tree/master/alarmserver), to ensure a functioning proxy server.  Then when configuring the Edge driver per instructions below, you can point the Edge driver to the IP address and port of the Alarmserver proxy server, which will provide a passthrough to the Envisalink.  When you are happy with everything functioning with the new Edge driver configuration, you can change its IP configuration to point directly to the Envisalink device and shutdown Alarmserver.
 
 ## Setup Instructions
 
@@ -56,7 +58,7 @@ Edit **edge_envisalink/hubpackage/src/config.lua** with the following informatio
 #### Install to your hub
 `smartthings edge:channels:assign <driverID>`
 
-`smartthings edge:drivers:install`
+`smartthings edge:drivers:install [<hubID>]`
 
 ## Logging
 To monitor the driver log messages, run the logger: 
