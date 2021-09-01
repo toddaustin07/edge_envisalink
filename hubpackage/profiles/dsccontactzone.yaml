@@ -1,0 +1,16 @@
+name: DSC.contactzone.v1
+components:
+- id: main
+  capabilities:
+    - id: contactSensor
+      version: 1
+    - id: "partyvoice23922.contactstatus"
+      version: 1
+    - id: "partyvoice23922.zonebypass"
+      version: 1
+  categories:
+    - name: ContactSensor
+metadata:
+  vid: ST_69f2bc09-a48b-4857-84c2-06f3305a378c
+  mnmn: fE4b
+

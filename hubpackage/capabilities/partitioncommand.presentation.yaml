@@ -1,0 +1,109 @@
+dashboard:
+  states: []
+  actions: []
+  basicPlus: []
+detailView:
+  - label: 'Tap for additional partition commands:'
+    displayType: list
+    list:
+      command:
+        name: setPartitionCommand
+        alternatives:
+          - key: panicfire
+            value: Panic Fire
+            type: active
+          - key: panicamb
+            value: Panic Ambulance
+            type: active
+          - key: panicpolice
+            value: Panic Police
+            type: active
+          - key: instantarm
+            value: Arm-Instant
+            type: active
+          - key: toggleinstant
+            value: Toggle Instant Mode
+            type: active
+          - key: togglenight
+            value: Toggle Night Mode
+            type: active
+          - key: togglechime
+            value: Toggle Chime
+            type: active
+          - key: refresh
+            value: Refresh
+            type: active
+          - key: reset
+            value: Reset
+            type: active
+        argumentType: string
+      state:
+        value: partitionCommand.value
+        valueType: string
+        alternatives:
+          - key: panicfire
+            value: Panic Fire
+            type: active
+          - key: panicamb
+            value: Panic Ambulance
+            type: active
+          - key: panicpolice
+            value: Panic Police
+            type: active
+          - key: instantarm
+            value: Arm-Instant
+            type: active
+          - key: toggleinstant
+            value: Toggle Instant Mode
+            type: active
+          - key: togglenight
+            value: Toggle Night Mode
+            type: active
+          - key: togglechime
+            value: Toggle Chime
+            type: active
+          - key: refresh
+            value: Refresh
+            type: active
+          - key: reset
+            value: Reset
+            type: active
+    state: null
+automation:
+  conditions: []
+  actions:
+    - label: 'Partition Commands:'
+      displayType: list
+      list:
+        alternatives:
+          - key: panicfire
+            value: Panic Fire
+            type: active
+          - key: panicamb
+            value: Panic Ambulance
+            type: active
+          - key: panicpolice
+            value: Panic Police
+            type: active
+          - key: instantarm
+            value: Arm-Instant
+            type: active
+          - key: toggleinstant
+            value: Toggle Instant Mode
+            type: active
+          - key: togglenight
+            value: Toggle Night Mode
+            type: active
+          - key: togglechime
+            value: Toggle Chime
+            type: active
+          - key: refresh
+            value: Refresh
+            type: active
+          - key: reset
+            value: Reset
+            type: active
+        command: setPartitionCommand
+        argumentType: string
+id: partyvoice23922.partitioncommand
+version: 1

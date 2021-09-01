@@ -1,0 +1,26 @@
+id: partyvoice23922.contactstatus
+version: 1
+status: proposed
+name: contactStatus
+attributes:
+  contactStatus:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+          maxLength: 16
+      additionalProperties: false
+      required:
+        - value
+    setter: setContactStatus
+    enumCommands: []
+commands:
+  setContactStatus:
+    name: setContactStatus
+    arguments:
+      - name: value
+        optional: false
+        schema:
+          type: string
+          maxLength: 16

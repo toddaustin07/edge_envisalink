@@ -1,0 +1,19 @@
+dashboard:
+  states: []
+  actions:
+    - displayType: switch
+      switch:
+        command:
+          name: setSwitch
+          'on': 'on'
+          'off': 'off'
+        state:
+          value: switch.value
+          'on': 'on'
+          'off': 'off'
+  basicPlus: []
+automation:
+  conditions: []
+  actions: []
+id: partyvoice23922.dscdashswitch
+version: 1

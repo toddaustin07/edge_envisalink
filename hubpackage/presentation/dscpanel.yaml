@@ -1,0 +1,90 @@
+mnmn: SmartThingsCommunity
+vid: 5e555606-e4a3-3730-8e86-26f9667beff3
+version: 0.0.1
+type: profile
+dashboard:
+  states:
+    - component: main
+      capability: partyvoice23922.partitionStatus
+      version: 1
+      idx: 0
+      group: main
+      values: []
+  actions:
+    - component: main
+      capability: partyvoice23922.dscdashswitch
+      version: 1
+      idx: 0
+      group: main
+detailView:
+  - component: main
+    capability: partyvoice23922.partitionStatus
+    version: 1
+    values: []
+    patch: []
+  - component: main
+    capability: partyvoice23922.ledStatus
+    version: 1
+    values: []
+    patch: []
+  - component: main
+    capability: partyvoice23922.dscstayswitch
+    version: 1
+    values: []
+    patch: []
+  - component: main
+    capability: partyvoice23922.dscawayswitch
+    version: 1
+    values: []
+    patch: []
+  - component: main
+    capability: partyvoice23922.partitioncommand
+    version: 1
+    values: []
+    patch: []
+  - component: main
+    capability: partyvoice23922.dscselectswitch
+    version: 1
+    values: []
+    patch: []
+automation:
+  conditions:
+    - component: main
+      capability: partyvoice23922.partitionStatus
+      version: 1
+      values: []
+      patch: []
+      exclusion: []
+    - component: main
+      capability: partyvoice23922.ledStatus
+      version: 1
+      values: []
+      patch: []
+      exclusion: []
+    - component: main
+      capability: healthCheck
+      version: 1
+      values: []
+      patch: []
+      exclusion: []
+  actions:
+    - component: main
+      capability: partyvoice23922.dscstayswitch
+      version: 1
+      values: []
+      patch: []
+      exclusion: []
+    - component: main
+      capability: partyvoice23922.dscawayswitch
+      version: 1
+      values: []
+      patch: []
+      exclusion: []
+    - component: main
+      capability: partyvoice23922.partitioncommand
+      version: 1
+      values: []
+      patch: []
+      exclusion: []
+presentationId: 5e555606-e4a3-3730-8e86-26f9667beff3
+manufacturerName: SmartThingsCommunity

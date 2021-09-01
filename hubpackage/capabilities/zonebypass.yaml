@@ -1,0 +1,26 @@
+id: partyvoice23922.zonebypass
+version: 1
+status: proposed
+name: zoneBypass
+attributes:
+  zoneBypass:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+          maxLength: 16
+      additionalProperties: false
+      required:
+        - value
+    setter: setZoneBypass
+    enumCommands: []
+commands:
+  setZoneBypass:
+    name: setZoneBypass
+    arguments:
+      - name: value
+        optional: false
+        schema:
+          type: string
+          maxLength: 16

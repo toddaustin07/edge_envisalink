@@ -1,0 +1,24 @@
+name: DSC.panel.v2
+components:
+- id: main
+  capabilities:
+    - id: "partyvoice23922.partitionStatus"
+      version: 1
+    - id: "partyvoice23922.dscdashswitch"
+      version: 1
+    - id: "partyvoice23922.ledStatus"
+      version: 1
+    - id: "partyvoice23922.dscstayswitch"
+      version: 1
+    - id: "partyvoice23922.dscawayswitch"
+      version: 1
+    - id: "partyvoice23922.partitioncommand"
+      version: 1
+    - id: "partyvoice23922.dscselectswitch"
+      version: 1
+  categories:
+    - name: Switch
+metadata:
+  vid: 5e555606-e4a3-3730-8e86-26f9667beff3
+  mnmn: fE4b
+

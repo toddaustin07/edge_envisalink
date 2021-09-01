@@ -1,0 +1,26 @@
+id: partyvoice23922.ledStatus
+version: 1
+status: proposed
+name: LED Status
+attributes:
+  ledStatus:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+          maxLength: 30
+      additionalProperties: false
+      required:
+        - value
+    setter: setledStatus
+    enumCommands: []
+commands:
+  setledStatus:
+    name: setledStatus
+    arguments:
+      - name: value
+        optional: false
+        schema:
+          type: string
+          maxLength: 30

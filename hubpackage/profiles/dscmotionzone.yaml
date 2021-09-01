@@ -1,0 +1,16 @@
+name: DSC.motionzone.v1
+components:
+- id: main
+  capabilities:
+    - id: motionSensor
+      version: 1
+    - id: "partyvoice23922.motionstatus"
+      version: 1
+    - id: "partyvoice23922.zonebypass"
+      version: 1
+  categories:
+    - name: MotionSensor
+metadata:
+  vid: ST_d492fb41-802a-4732-9ad9-c5d96ed1f6bc
+  mnmn: fE4b
+

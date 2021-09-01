@@ -1,0 +1,26 @@
+id: partyvoice23922.partitionStatus
+version: 1
+status: proposed
+name: Partition Status
+attributes:
+  partStatus:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+          maxLength: 16
+      additionalProperties: false
+      required:
+        - value
+    setter: setPartStatus
+    enumCommands: []
+commands:
+  setPartStatus:
+    name: setPartStatus
+    arguments:
+      - name: value
+        optional: false
+        schema:
+          type: string
+          maxLength: 16
