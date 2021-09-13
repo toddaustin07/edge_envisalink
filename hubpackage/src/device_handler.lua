@@ -25,41 +25,27 @@
 
 local capabilities = require "st.capabilities"
 local log = require "log"
+local cosock = require "cosock"                   -- cosock used only for sleep timer in this module
+local socket = require "cosock.socket" 
 
-local conf = require 'config'
-
---[[
--- Custom Capabilities
-local cap_partitionstatus = capabilities["partyvoice23922.partitionStatus"]
-local cap_dscdashswitch = capabilities["partyvoice23922.dscdashswitch"]
-local cap_ledstatus = capabilities["partyvoice23922.ledStatus"]
-local cap_dscstayswitch = capabilities["partyvoice23922.dscstayswitch"]
-local cap_dscawayswitch = capabilities["partyvoice23922.dscawayswitch"]
-local cap_partitioncommand = capabilities["partyvoice23922.partitioncommand"]
-local cap_dscselectswitch = capabilities["partyvoice23922.dscselectswitch"]
-local cap_contactstatus = capabilities["partyvoice23922.contactstatus"]
-local cap_motionstatus = capabilities["partyvoice23922.motionstatus"]
-local cap_zonebypass = capabilities["partyvoice23922.zonebypass"]
---]]
 
 -- Device capability profiles
 local profiles = {
-  ["panel"] = "DSC.panel.v2",
+  ["panel"] = "DSC.panel.v3",
   ["contact"] = "DSC.contactzone.v1",
   ["motion"] = "DSC.motionzone.v1",
   ["smoke"] = "DSC.contactzone.v1",		-- ** Needs work
   ["co"] = "DSC.contactzone.v1",			-- ** Needs work
 }
 
-local STdriver
+-- Module variables
 local ALARMMEMORY = {}
-local armedflag = false
 local STpartitionstatus = ''
 
 
 local function emitSensorState(msg, sensorstate)
 
-	local device_list = STdriver:get_devices()
+	local device_list = evlDriver:get_devices()
 	for _, device in ipairs(device_list) do
 		if device.device_network_id:match('^DSC:Z(%d+)') == msg.value then
 			local zonetype = device.model:match('^DSC (%g+)')
@@ -86,7 +72,7 @@ end
 
 local function emitZoneStatus(msg, zonestatus)
 
-	local device_list = STdriver:get_devices()
+	local device_list = evlDriver:get_devices()
 	for _, device in ipairs(device_list) do
 		if device.device_network_id:match('^DSC:Z(%d+)') == msg.value then
 			local zonetype = device.model:match('^DSC (%g+)')
@@ -163,7 +149,7 @@ local function proc_bypass_msg(msg)
 												['off'] = 'Bypass is off',
 											}
 											
-	local device_list = STdriver:get_devices()
+	local device_list = evlDriver:get_devices()
 
   for _, device in ipairs(device_list) do
 		local zonenum = device.device_network_id:match('^DSC:Z(%d+)')
@@ -179,7 +165,7 @@ end
 
 local function proc_partition_msg(msg)
 
-	local device_list = STdriver:get_devices()
+	local device_list = evlDriver:get_devices()
 
   for _, device in ipairs(device_list) do
   
@@ -222,6 +208,7 @@ local function proc_partition_msg(msg)
 														['notready'] = 'Not ready',
 														['forceready'] = 'Ready',
 														['exitdelay'] = 'Exit delay',
+														['entrydelay'] = 'Entry delay',
 														['stay'] = 'Armed-stay',
 														['away'] = 'Armed-away',
 														['disarm'] = 'Disarmed',
@@ -241,6 +228,9 @@ local function proc_partition_msg(msg)
 					
 					if (display_status == 'Ready') then
 						if priorstatus ~= 'Ready' then
+							--device:emit_event(cap_dscdashswitch.switch('off'))
+							--device:emit_event(cap_dscstayswitch.switch('off'))
+							--device:emit_event(cap_dscawayswitch.switch('off'))
 							device:emit_event(cap_partitionstatus.partStatus(display_status))
 						end
 					
@@ -323,14 +313,35 @@ local function process_message(msg)
 end
  
 
-local function devicesetup(driver)
+local function devicesetup()
 
 	local MFG_NAME = 'Digital Security Controls'
 	local PANEL_MODEL = 'DSC panel'
 	local VEND_LABEL = 'PowerSeries'
 
-	-- Create zone devices
+	-- Create panel device
 	
+	for partnum, partname in ipairs(conf.partitions) do
+	
+		local id = 'DSC:P' .. tostring(partnum)
+		local devprofile = profiles['panel']
+		local create_device_msg = {
+																type = "LAN",
+																device_network_id = id,
+																label = partname,
+																profile = devprofile,
+																manufacturer = MFG_NAME,
+																model = PANEL_MODEL,
+																vendor_provided_label = VEND_LABEL,
+															}
+												
+		log.info(string.format("Creating Partition #%d Panel (%s): '%s'", partnum, id, partname))
+
+		assert (evlDriver:try_create_device(create_device_msg), "failed to create panel device")
+	end
+	socket.sleep(1.5)
+
+	-- Create zone devices
 	for zonenum, zone in ipairs(conf.zones) do
 	
 		local id = 'DSC:Z' .. tostring(zonenum)
@@ -347,64 +358,33 @@ local function devicesetup(driver)
                         
 		log.info(string.format("Creating Zone #%d device (%s): '%s'; type=%s", zonenum, id, zone.name, zone.type))
 
-		assert (driver:try_create_device(create_device_msg), "failed to create zone device")
+		assert (evlDriver:try_create_device(create_device_msg), "failed to create zone device")
+		
+		socket.sleep(.25)
 	
 	end
-	
-	
-	-- Create panel device
-	
-	for partnum, partition in ipairs(conf.partitions) do
-	
-		local id = 'DSC:P' .. tostring(partnum)
-		local devprofile = profiles['panel']
-		local create_device_msg = {
-																type = "LAN",
-																device_network_id = id,
-																label = partition.name,
-																profile = devprofile,
-																manufacturer = MFG_NAME,
-																model = PANEL_MODEL,
-																vendor_provided_label = VEND_LABEL,
-															}
-												
-		log.info(string.format("Creating Partition #%d Panel (%s): '%s'", partnum, id, partition.name))
-
-		assert (driver:try_create_device(create_device_msg), "failed to create panel device")
-	end
-	
 end 
 
 
-local function initpanel(device)
+local function onoffline(status)
 
-	device:emit_event(cap_dscdashswitch.switch('off'))
-	device:emit_event(cap_dscstayswitch.switch('off'))
-	device:emit_event(cap_dscawayswitch.switch('off'))
-	
-	local dashconfig = device:get_field(DASHCONFIG)
-	if dashconfig then
-		device:emit_event(cap_dscselectswitch.switch(command.args.value))
-	else
-		device:emit_event(cap_dscselectswitch.switch('type: Arm STAY'))
+	local device_list = evlDriver:get_devices()
+
+  for _, device in ipairs(device_list) do
+		
+		if status == 'online' then
+			device:online()
+		elseif status == 'offline' then
+			device:offline()
+		end
+
 	end
-	
 
 end
-
-local function initialize(driver)
-
-	STdriver = driver
-	
-end
-
-
-
 
  
 return {
-	initialize = initialize,
 	devicesetup = devicesetup,
 	process_message = process_message,
-	initpanel = initpanel,
+	onoffline = onoffline,
 }

@@ -24,14 +24,13 @@
 --]]
 
 
-local conf = require "config"
 local evl = require "envisalinkdefs"
-local devhandler = require "device_handler"
 local log = require "log"
 
 local cosock = require "cosock"
 local socket = require "cosock.socket"
 
+-- Constants
 local MAXPARTITIONS = 4
 local MAXZONES = 16
 local MAXEVENTS = 10
@@ -39,11 +38,11 @@ local MAXALLEVENTS = 100
 local MAXALARMUSERS = 10
 local TIMETOWAIT = 2
 
-local stdriver
-local client
+-- Module variables
+local devhandler
+local clientsock
 local connected = false
 local loggedin = false
-local _retrydelay = 10
 local reconnect_timer
 
 
@@ -72,19 +71,18 @@ local function get_checksum(code, data)
 	return string.sub(string.format('%02X', sum), -2)
 end
 
+local msghandler			-- forward reference to msghandler function
 
-local function connect(driver)
+local function connect()
 
-	if driver then; stdriver = driver; end
-	
 	local listen_ip = "0.0.0.0"
 	local listen_port = 0
 
-	client = assert(socket.tcp(), "create LAN socket")
+	local client = assert(socket.tcp(), "create LAN socket")
 
 	assert(client:bind(listen_ip, listen_port), "LAN socket setsockname")
 
-	local ret, msg = client:connect(conf.envisalink.host, conf.envisalink.port)
+	local ret, msg = client:connect(conf.envisalink.ip, conf.envisalink.port)
 	
 	if ret == nil then
 		log.error ('Could not connect to EnvisaLink:', msg)
@@ -92,50 +90,61 @@ local function connect(driver)
 	else
 		client:settimeout(0)
 		connected = true
+		clientsock = client
+		evlDriver:register_channel_handler(client, msghandler, 'LAN client handler')
 		return client
 	end
 end
 
 
-local function disconnect(client)
+local function disconnect()
 
 	connected = false
 	loggedin = false
-	client:close()
+	
+	-- probably don't need this here, but just in case, cancel any outstanding retry timers
+	if timers.reconnect then; evlDriver:cancel_timer(timers.reconnect); timers.reconnect = nil; end
+  if timers.waitlogin then; evlDriver:cancel_timer(timers.waitlogin); timers.waitlogin = nil; end
+	
+	if clientsock then
+		evlDriver:unregister_channel_handler(clientsock)
+		clientsock:close()
+	end
+	devhandler.onoffline('offline')
 
 end
 
+local doreconnect						-- Forward reference
 
-local msghandler			-- forward reference to msghandler function
+-- This function invoked by delayed timer
+local function dowaitlogin()
+	
+	timers.waitlogin = nil
+	if not loggedin then
+		log.warn('Failed to log into Envisalink; connect retry in 15 seconds')
+		disconnect()
+		timers.reconnect = evlDriver:call_with_delay(15, doreconnect, 'Re-connect timer')
+	else
+		devhandler.onoffline('online')
+	end
+end
 
-local function doreconnect()
+-- This function invoked by delayed timer
+doreconnect = function()
 
 	log.info ('Attempting to reconnect to EnvisaLink')
-
-	local clientsock = connect()
+	timers.reconnect = nil
+	local client = connect()
 	
-	if clientsock then
+	if client then
 	
 		log.info ('Re-connected to Envisalink')
-		stdriver:register_channel_handler(clientsock, msghandler, 'LAN client handler')
 		
-		local retries = 5
-    repeat 
-      log.debug ('Waiting for login...')
-      socket.sleep(1)
-      retries = retries - 1
-    until loggedin or (retries == 0)
-    
-    if loggedin then
-      log.info('Successfully logged in to Envisalink')
-      stdriver:cancel_timer(reconnect_timer)
-		else
-			log.warn('Failed to log into Envisalink')
-			disconnect(clientsock)
-			stdriver:unregister_channel_handler(clientsock)
-    end
+		timers.waitlogin = evlDriver:call_with_delay(3, dowaitlogin, 'Wait for Login')
+		
+	else
+		timers.reconnect = evlDriver:call_with_delay(15, doreconnect, 'Re-connect timer')
 	end
-
 end
 
 		
@@ -153,7 +162,7 @@ local function send_command(code, data, checksum)
 	
 	log.debug ('TX > ' .. to_send)
 	
-	client:send(to_send)
+	clientsock:send(to_send)
 	
 end
 
@@ -266,50 +275,45 @@ local function build_event_table(code, parameters, event, message)
 			
 			local partnum = tonumber(parameters:sub(1,1))
 			if conf.partitions[partnum] then
-				if conf.partitions[partnum].name then
-					if code == 655 then
-						--send_command('071', '1*1#')						-- WHY????
-					end
-					
-					local codeMap = {
-														[650] = 'ready',
-														[651] = 'notready',
-														[653] = 'forceready',
-														[654] = 'alarm',
-														[655] = 'disarm',
-														[656] = 'exitdelay',
-														[657] = 'entrydelay',
-														[663] = 'chime',
-														[664] = 'nochime',
-														[701] = 'armed',
-														[702] = 'armed',
-														[840] = 'trouble',
-														[841] = 'restore'
-													}
-					update =  {
-											['type'] = 'partition',
-											['name'] = conf.partitions[partnum].name,
-											['value'] = tostring(partnum)
-										}
-										
-					if code == 652 then
-						if ends_with(message,'Zero Entry Away') then
-							update['status'] = 'instantaway'
-						elseif ends_with(message,'Zero Entry Stay') then
-							update['status'] = 'instantstay'
-						elseif ends_with(message,'Away') then
-							update['status'] = 'away'
-						elseif ends_with(message,'Stay') then
-							update['status'] = 'stay'	
-						else
-							update['status'] = 'armed'
-						end
+				if code == 655 then
+					--send_command('071', '1*1#')						-- WHY????
+				end
+				
+				local codeMap = {
+													[650] = 'ready',
+													[651] = 'notready',
+													[653] = 'forceready',
+													[654] = 'alarm',
+													[655] = 'disarm',
+													[656] = 'exitdelay',
+													[657] = 'entrydelay',
+													[663] = 'chime',
+													[664] = 'nochime',
+													[701] = 'armed',
+													[702] = 'armed',
+													[840] = 'trouble',
+													[841] = 'restore'
+												}
+				update =  {
+										['type'] = 'partition',
+										['name'] = conf.partitions[partnum],
+										['value'] = tostring(partnum)
+									}
+									
+				if code == 652 then
+					if ends_with(message,'Zero Entry Away') then
+						update['status'] = 'instantaway'
+					elseif ends_with(message,'Zero Entry Stay') then
+						update['status'] = 'instantstay'
+					elseif ends_with(message,'Away') then
+						update['status'] = 'away'
+					elseif ends_with(message,'Stay') then
+						update['status'] = 'stay'	
 					else
-						update['status'] = codeMap[code]
+						update['status'] = 'armed'
 					end
 				else
-					log.error ('Missing configured partition name')
-					return
+					update['status'] = codeMap[code]
 				end
 			else
 				return	-- not a configured partition
@@ -362,12 +366,14 @@ local function build_event_table(code, parameters, event, message)
 end
 	
 
+-- Login to Envisalink; once successful, send Refresh request
 local function handle_login(code, parameters, event, message)
 
 	if parameters == '3' then
+		log.debug ('Received login password request; sending password')
 		send_command('005', conf.envisalink.pass)
 	elseif parameters == '1' then
-		log.debug ('Received login confirmation; synching devices...')
+		log.info('Successfully logged in to Envisalink; synching devices...')
 		loggedin = true
 		send_command('001', '')
 		
@@ -387,7 +393,7 @@ local function format_msg(event, parameters)
 			local partition_num = tonumber(parameters:sub(1,1))
 			local partition_name
 			if partition_num <= #conf.partitions then
-				partition_name = conf.partitions[partition_num].name
+				partition_name = conf.partitions[partition_num]
 			else
 				partition_name = tostring(partition_num)
 			end
@@ -509,7 +515,7 @@ local function handle_line(input)
 		local event = evl.ResponseTypes[code]
 		local message = format_msg(event, parameters)
 		
-		log.info (os.date("%m-%d-%Y %I:%M:%S") .. '  RX < ' .. tostring(code) .. ' - ' .. parameters .. ' - ' .. message)
+		log.info ('RX < ' .. tostring(code) .. ' - ' .. parameters .. ' - ' .. message)
 
 		local errcode
 		if code == 502 then				-- System error
@@ -561,7 +567,7 @@ end
 
 local function reconnect()
 
-	reconnect_timer = stdriver:call_on_schedule(15, doreconnect , "Re-connect timer")
+	timers.reconnect = evlDriver:call_with_delay(15, doreconnect, 'Re-connect timer')
 
 end
 
@@ -586,8 +592,8 @@ msghandler = function(_, sock)
 		log.error ('Socket Receive Error occured: ', recverr)
 		
 		if recverr == 'closed' then
-			disconnect(sock)
-			stdriver:unregister_channel_handler(sock)
+			log.warn ('Envisalink has disconnected')
+			disconnect()
 			reconnect()
 		
 		end
@@ -614,7 +620,14 @@ local function is_connected()
 
 end
 
+local function inithandler(dev_handler)
+
+	devhandler = dev_handler
+	
+end
+
 return {
+	inithandler = inithandler,
 	connect = connect,
 	disconnect = disconnect,
 	reconnect = reconnect,

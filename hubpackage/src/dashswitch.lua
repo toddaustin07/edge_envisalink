@@ -1,0 +1,40 @@
+return [[
+{
+    "id": "partyvoice23922.dscdashswitch",
+    "version": 1,
+    "status": "proposed",
+    "name": "dscdashswitch",
+    "attributes": {
+        "switch": {
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "value"
+                ]
+            },
+            "setter": "setSwitch",
+            "enumCommands": []
+        }
+    },
+    "commands": {
+        "setSwitch": {
+            "name": "setSwitch",
+            "arguments": [
+                {
+                    "name": "value",
+                    "optional": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        }
+    }
+}
+]]
