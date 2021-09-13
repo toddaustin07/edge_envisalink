@@ -110,3 +110,10 @@ Go to the (primary) panel device details screen in the mobile app.  Then tap the
 If you enter a new Envisalink IP:port address, if it is valid, the driver will attempt to re-connect to the Envisalink at that new address.
 
 *Note: it is on this Settings screen where you might, in the future, be able to configure your partitions and zones rather than using a configuration file; however this capability  is not yet functioning.*
+
+## Known Issues
+
+- The Additional Partition Commands that you can select from the panel device details screen are in random order (Edge issue)
+- The Settings fields you can modify from the panel device settings screen are in random order (Edge issue)
+- Settings field changes may result in multiple duplicate notifications to the driver (Edge issue)
+- Switches and status attributes may not get initially set correctly when devices are first created (Edge issue).  However they will eventually correct themselves as DSC updates are received, and/or an alarm/disarm cycle is completed 
