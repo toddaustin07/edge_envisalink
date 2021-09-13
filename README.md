@@ -42,7 +42,7 @@ Carefully edit **edge_envisalink/hubpackage/src/config.lua** with the following 
   2) IP address of Envisalink device on your local LAN -or- of a running Alarmserver package with functioning proxy server (see 'Migrating...' above)
   3) Port number of above (default is '4025')
   4) Password of above (default is 'user')
-  5) Your 4-digit alarmcode
+  5) Your 4-digit DSC alarmcode which is used to arm and disarm your system
   6) Names to associate with each partition panel (or leave default)
   7) Zone information (name, type, associated partition); type can be 'contact', 'motion', 'smoke', 'co', or 'water'
      
