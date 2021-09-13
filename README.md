@@ -56,7 +56,7 @@ CAVEAT:  Configuration may change considerably.  I am exploring the use of devic
 
 *Skip this step if you already have a Driver Channel*
 
-`smartthings edge:channels:create -i <my_channel>.json`
+`smartthings edge:channels:create`
 
 `smartthings edge:channels:enroll [<hubID>]`
 
