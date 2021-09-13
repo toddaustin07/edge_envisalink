@@ -78,7 +78,7 @@ Here you will see all messages to and from the Envisalink, as well as other driv
 *Note: you won't see anything being logged until you peform the next step.*
 
 ## Initializing the Driver
-First, be sure that you have starting logging in a window that you can monitor.
+First, be sure that you have started logging in a window that you can monitor.
 
 Go into the SmartThings mobile app and tap on the **+** in the upper right corner to **Add**, then tap on **Devices**.  Next, tap on **Scan nearby** in the lower right corner.  At this point the driver will be initialized and it will attempt connection with the Envisalink.  Watch the log messages to be sure it successfully connected and logged in.  The driver will then create devices for each of your configured DSC zones and partition panels.  You should see those pop up on your mobile app.  After creating the SmartThings devices, the driver then issues a refresh command to the Envisalink to get updates on all your zones and partitions so it can update SmartThings.  At this point, you should be able to explore your newly created devices which should be reflecting the current DSC zone and partition status.
 
