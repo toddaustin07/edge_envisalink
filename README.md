@@ -37,7 +37,7 @@ This package does not prereq the Alarmserver package.  However if the user alrea
 `git clone git@github.com:toddaustin07/edge_envisalink.git`
 
 ### Configure the Driver
-Edit **edge_envisalink/hubpackage/src/config.lua** with the following information (follow Lua table syntax; don't change anything other than the following)
+Carefully edit **edge_envisalink/hubpackage/src/config.lua** with the following information (follow Lua table syntax; don't change anything other than the following)
   1) Names associated with any defined DSC user codes (optional)
   2) IP address of Envisalink device on your local LAN -or- of a running Alarmserver package with functioning proxy server (see 'Migrating...' above)
   3) Port number of above (default is '4025')
