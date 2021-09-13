@@ -400,11 +400,17 @@ local function handler_infochanged (driver, device, event, args)
     
     
     if port then
-      if (port < 1) or (port > 65535) then 
+      if type(port) == 'number' then
+        if (port < 1) or (port > 65535) then 
+          valid = false
+        end
+      else
         valid = false
       end
+    else
+      valid = false
     end
-
+    
     if valid then
       return ip, port
     else
