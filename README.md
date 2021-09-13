@@ -80,7 +80,7 @@ Here you will see all messages to and from the Envisalink, as well as other driv
 ## Initializing the Driver
 First, be sure that you have started logging in a window that you can monitor.
 
-Go into the SmartThings mobile app and tap on the **+** in the upper right corner to **Add**, then tap on **Devices**.  Next, tap on **Scan nearby** in the lower right corner.  At this point the driver will be initialized and it will attempt connection with the Envisalink.  Watch the log messages to be sure it successfully connected and logged in.  The driver will then create devices for each of your configured DSC zones and partition panels.  You should see those pop up on your mobile app.  After creating the SmartThings devices, the driver then issues a refresh command to the Envisalink to get updates on all your zones and partitions so it can update SmartThings.  At this point, you should be able to explore your newly created devices which should be reflecting the current DSC zone and partition status.
+Go into the SmartThings mobile app and tap on the **+** in the upper right corner to **Add**, then tap on **Devices**.  Next, tap on **Scan nearby** in the lower right corner.  At this point the driver will create devices for your partition panel + zones.  Once they are successfully created and initialized, the driver will attempt connection with the Envisalink.  Watch the log messages to be sure it successfully connected and logged in.  Once logged into the Envisalink, the driver then issues a refresh command to the Envisalink to get updates on all your zones and partitions so it can update SmartThings.  At this point, you should be able to explore your newly created devices which should be reflecting the current DSC zone and partition status.
 
 ### Reinstalling the Driver
 If there is any reason you need to re-install the Envisalink Edge driver, the DSC devices originally created will not have to be re-created and you do not need to perfom a device-add/scan-nearby again.  When the driver is (re)installed, it will automatically re-synch with the Envisalink.
@@ -101,3 +101,12 @@ The panel device detail screen has a number of features. First is the partition 
 
 ### Alarms
 When an alarm occurs, the panel device dashboard view state will show "ALARM!!". The zone(s) that caused the alarm condition will show alarm status on the zone device **DETAILS** screen (the zone device dashboard card will continue to show the current state, i.e. open, motion, smoke, etc.). When the alarm is cleared (system is disarmed), the panel state will return to normal ('Ready'), and the Indicators field on the details screen will show 'Memory' until the next system arm. For the zone that alarmed, its device details screen will continue to show an alarm status until the next time the system is armed. This implements the DSC 'memory' function, giving you a way to see what zone caused the alarm even after the alarm is cleared.
+
+### Panel Device Settings
+Selected driver configuration settings can be updated through the mobile app, rather than editing the Lua configuration file and reinstalling the driver to the hub.
+
+Go to the (primary) panel device details screen in the mobile app.  Then tap the 3 vertical dots in the upper right corner.  You should then see a number of options including Edit, Settings, Driver, and Information.  Tap Settings.  Here you will see the configuration settings you can change, which includes Envisalink IP:port address, Envisalink login password, and 4-digit DSC alarm code.  
+
+If you enter a new Envisalink IP:port address, if it is valid, the driver will disconnect and then try to re-connect to the Envisalink at that new address.
+
+Note: it is on this Settings screen where you might, in the future, be able to configure your partitions and zones rather than using a configuration file; however this capability  is not yet functioning.
