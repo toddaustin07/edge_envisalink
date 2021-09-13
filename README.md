@@ -1,5 +1,7 @@
 # SmartThings Edge Device Driver for DSC/Envisalink
 
+**NOTE:  THIS DRIVER IS WORK-IN-PROGRESS**
+
 This Edge driver is targeted to users having a DSC security system with an Envisalink board connecting it to the local LAN.  Edge drivers run directly on a SmartThings hub.  The driver will connect with the Envisalink to create and update devices reflecting your DSC system partition panels and zones.
 
 The typical audiance has an existing solution using the 'Alarmserver' package. Alarmserver is a Python-based program that runs on a LAN-connected computer (often a Raspberry Pi) and connects to an Envisalink module to pass messages back and forth to SmartThings.  However Alarmserver is based on the legacy DTH / SmartApp / graph callback implementation which will be sunset by SmartThings.  This driver provides a migration path for those Alarmserver users and offers a number of additional benefits as outlined below.
@@ -22,7 +24,7 @@ This package does not prereq the Alarmserver package.  However if the user alrea
 
 ### Caveats
 - This package should be considered beta-level
-- No testing has been done yet for smoke, carbonmonoxide (co), or water zones (looking for volunteers)
+- No testing has been done yet for smoke, carbon monoxide (co), or water zones (looking for volunteers)
 - No testing has been done yet for multi-partition systems (looking for volunteers)
 - SmartThings Edge is still in beta as of September 2021
 
@@ -45,6 +47,8 @@ Edit **edge_envisalink/hubpackage/src/config.lua** with the following informatio
   7) Zone information (name, type, associated partition); type can be 'contact', 'motion', 'smoke', 'co', or 'water'
      
      *Hint: keep name short so it fits on the SmartThings mobile app device dashboard card*
+     
+CAVEAT:  Configuration may change considerably.  I am exploring the use of device SETTINGS, which has the potential to replace the need for a custom configuration file.  However that functionality is still problematic with the current Edge beta.
 
 ### Install the Envisalink Edge Driver to your hub
 
