@@ -71,7 +71,7 @@ CAVEAT:  Configuration may change considerably.  I am exploring the use of devic
 ## Logging
 To monitor the driver log messages, run the logger: 
 
-`smartthings edge:drivers:logcat <driverID> --hub-address=<hub_IP_addr>:9495`
+`smartthings edge:drivers:logcat <driverID> --hub-address=<hub_IP_addr>`
 
 Here you will see all messages to and from the Envisalink, as well as other driver logging output and SmartThings platform messages.  Running the logger is not required once everything is up and running to your satisfaction.
 
