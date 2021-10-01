@@ -82,15 +82,6 @@ The panel device *detail* screen has a number of features. First is the partitio
 ### Alarms
 When an alarm occurs, the panel device dashboard view state will show "ALARM!!". The zone(s) that caused the alarm condition will show alarm status on the zone device *detail* screen (the zone device *dashboard* card will continue to show the current state, i.e. open, motion, smoke, etc.). When the alarm is cleared (system is disarmed), the panel state will return to normal ('Ready'), and the Indicators field on the panel details screen will show 'Memory' until the next system arm. For the zone that had caused the alarm, its device *details* screen will continue to show an alarm status until the next time the system is armed. This implements the DSC 'memory' function, giving you a way to see what zone had caused the alarm even after the alarm is cleared on the panel.
 
-### Panel Device Settings
-Selected driver configuration settings can be updated through the mobile app, rather than editing the Lua configuration file and reinstalling the driver to the hub.
-
-Go to the (primary) panel device details screen in the mobile app.  Then tap the 3 vertical dots in the upper right corner.  You should then see a number of options including Edit, Settings, Driver, and Information.  Tap Settings.  Here you will see the configuration settings you can change, which includes Envisalink IP:port address, Envisalink login password, and 4-digit DSC alarm code.  Think of this as a way to **override** what you originally put in your configuration file prior to loading the Envisalink driver to the hub.
-
-If you enter a new Envisalink IP:port address, if it is valid, the driver will attempt to re-connect to the Envisalink at that new address.
-
-*Note: it is on this Settings screen where you might, in the future, be able to configure your partitions and zones rather than using a configuration file; however this capability  is not yet functioning.*
-
 ## Known Issues
 
 - The DSC Panel device Settings fields used for configuration are in random order (Edge issue)
