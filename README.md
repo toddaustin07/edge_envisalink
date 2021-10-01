@@ -1,6 +1,6 @@
 # SmartThings Edge Device Driver for DSC/Envisalink
 
-**NOTE:  THIS DRIVER IS WORK-IN-PROGRESS**
+**NOTE:  THIS DRIVER IS IS IN TESTING**
 
 This Edge driver is targeted to users having a DSC security system with an Envisalink board connecting it to the local LAN.  Edge drivers run directly on a SmartThings hub.  The driver will connect with the Envisalink to create and update devices reflecting your DSC system partition panels and zones.
 
@@ -17,7 +17,10 @@ The typical (but not exclusive) audiance has an existing solution using the 'Ala
 ### Pre-requisites
 - SmartThings hub V2 or later
 - Connected and running Envisalink interface; know its IP address and port #
+
+### Optional
 - SmartThings CLI with Edge authorizations (https://github.com/SmartThingsCommunity/smartthings-cli/tree/master/packages/cli#smartthings-devicespresentation-id)
+For viewing logging output
 
 ### Migrating from Alarmserver
 This package does not prereq the Alarmserver package.  However if the user already has that running, there is a setup option where you can run both solutions in parallel.  You must be running the latest Alarmserver package from Ralph Torchia (https://github.com/rtorchia/DSC-Envisalink/tree/master/alarmserver), to ensure a functioning proxy server.  Then when configuring the Edge driver per instructions below, you can point the Edge driver to the IP address and port of the Alarmserver proxy server, which will provide a passthrough to the Envisalink.  When you are happy with everything functioning with the new Edge driver configuration, you can change its IP configuration to point directly to the Envisalink device and shutdown Alarmserver.
@@ -25,69 +28,46 @@ This package does not prereq the Alarmserver package.  However if the user alrea
 ### Caveats
 - This package should be considered beta-level
 - No testing has been done yet for smoke, carbon monoxide (co), or water zones (looking for volunteers)
-- No testing has been done yet for multi-partition systems (looking for volunteers)
+- Supports 1 partition only
+- Supports up to 12 zones, but this is a temporary limitation for testing purposes; those with > 12 zones can still run this 
 - SmartThings Edge is still in beta as of September 2021
 
 ## Setup Instructions
 
-### Clone this repository to a local machine
-
-`cd ~`
-
-`git clone git@github.com:toddaustin07/edge_envisalink.git`
-
-### Configure the Driver
-Carefully edit **edge_envisalink/hubpackage/src/config.lua** with the following information (follow Lua table syntax; don't change anything other than the following)
-  1) Names associated with any defined DSC user codes (optional)
-  2) IP address of Envisalink device on your local LAN -or- of a running Alarmserver package with functioning proxy server (see 'Migrating...' above)
-  3) Port number of above (default is '4025')
-  4) Password of above (default is 'user')
-  5) Your 4-digit DSC alarmcode which is used to arm and disarm your system
-  6) Names to associate with each partition panel (or leave default)
-  7) Zone information (name, type, associated partition); type can be 'contact', 'motion', 'smoke', 'co', or 'water'
-     
-     *Hint: keep name short so it fits on the SmartThings mobile app device dashboard card*
-     
-CAVEAT:  Configuration may change considerably.  I am exploring the use of device SETTINGS, which has the potential to replace the need for a custom configuration file.  However that functionality is still problematic with the current Edge beta.
-
 ### Install the Envisalink Edge Driver to your hub
+Use this channel invite:  https://api.smartthings.com/invitation-web/accept?id=2345136d-b4ea-4e4d-8632-7496a1fb368c
 
-#### Create a Driver Channel and enroll with your hub
-
-*Skip this step if you already have a Driver Channel*
-
-`smartthings edge:channels:create`
-
-`smartthings edge:channels:enroll [<hubID>]`
-
-#### Create an Edge package for the Envisalink driver
-`smartthings edge:drivers:package ~/edge_envisalink/hubpackage`
-
-#### Install to your hub
-`smartthings edge:channels:assign <driverID>`
-
-`smartthings edge:drivers:install [<hubID>]`
-
-## Logging
-To monitor the driver log messages, run the logger: 
-
-`smartthings edge:drivers:logcat <driverID> --hub-address=<hub_IP_addr>`
-
+#### Start logging (optional)
+Use the CLI to find out the driver ID and start the logger in a window on your computer
+```
+smartthings edge:drivers:installed
+smartthings edge:drivers:logcat <driverID> --hub-address=<hub IP addr>
+```
 Here you will see all messages to and from the Envisalink, as well as other driver logging output and SmartThings platform messages.  Running the logger is not required once everything is up and running to your satisfaction.
 
 *Note: you won't see anything being logged until you peform the next step.*
+  
+### Initialize and Configure the Driver
 
-## Initializing the Driver
-First, be sure that you have started logging in a window that you can monitor.
+Go to the SmartThings mobile app and do a Add device / Scan nearby.
+You should see activity in the logging window and a new device called ‘DSC Panel’ should be created in your Devices list in a ‘No room assigned’ room.
+Go to the device details screen of the new panel device and tap the 3 vertical dots in the upper right corner, then tap Settings.
+Warning: the Settings fields are listed in random order - a current issue with the Edge platform beta
+1. FIRST, tap on each zone you want to configure and select the appropriate type. Note that you will not be able to change this once the zone device is created. As you configure each zone, a new SmartThings device will be created and appear in your no-room-assigned room. You should also see associated activity in your log window.
+2. When you are done configuring your zones, set your 4-digit DSC Alarm Code
+3. If your Envisalink login password is the default ‘user’, you can leave that field alone, otherwise change it to whatever password you have set for your Envisalink
+4. **LASTLY**, set your Envisalink LAN Address (ip:port). Once you make this change, the driver will attempt to go out and connect to your Envisalink. Watch the log messages. If it is able to connect it will then log in with the configured Envisalink password. If for some reason it fails to connect, then it will keep retrying every 15 seconds or so.
+Once you’ve successfully connected to the Envisalink, a refresh is issued to update the states of each of your zones.  At this point, you should be able to explore your newly created devices which should be reflecting the current DSC zone and partition status.
 
-Go into the SmartThings mobile app and tap on the **+** in the upper right corner to **Add**, then tap on **Devices**.  Next, tap on **Scan nearby** in the lower right corner.  At this point the driver will create devices for your partition panel + zones.  Once they are successfully created and initialized, the driver will attempt connection with the Envisalink.  Watch the log messages to be sure it is successfully connected and logged in.  Once logged into the Envisalink, the driver then issues a refresh command to the Envisalink to get updates on all your zones and partitions so it can update SmartThings.  At this point, you should be able to explore your newly created devices which should be reflecting the current DSC zone and partition status.
+*Note: Due to some current issues in the Edge beta, some device states may not fully initialize at startup (e.g. zone bypass state, panel arm switches), however an alarm arm/disarm sequence should resolve this.*
 
-### Reinstalling the Driver
-If there is any reason you need to re-install the Envisalink Edge driver (driver update or config file change), the DSC devices originally created will not have to be re-created and you do not need to perfom a device-add/scan-nearby again.  When the driver is (re)installed, it will automatically re-synch with the Envisalink.
+
+### Updating the Driver
+If there is an update pushed to your hub for the Envisalink Edge driver, the DSC devices originally created will not have to be re-created and you do not need to perfom a device-add/scan-nearby again.  When the updated driver is installed, it will automatically re-synch with the Envisalink.
 
 ## Using the SmartThings Devices in the Mobile App
 
-The first thing you will want to do after your DSC devices are created is to group them into a room representing your DSC alarm system.
+The first thing you will want to do after your DSC devices are created is to group them into a room representing your DSC alarm system and modify the zone device names to your liking.
 
 ### Zone Devices
 The zone devices have no action buttons on the dashboard view - just the status of the device (open/closed, motion/no motion, etc.). On the details screen, you'll see a zone status field, which most of the time will show the open/close-type state of the device, but may also show other status such as alarm, trouble, etc. Also on the details screen is a toggle button you can use to turn on and off bypass state for the zone. 
@@ -113,7 +93,7 @@ If you enter a new Envisalink IP:port address, if it is valid, the driver will a
 
 ## Known Issues
 
+- The DSC Panel device Settings fields used for configuration are in random order (Edge issue)
 - The Additional Partition Commands that you can select from the panel device details screen are in random order (Edge issue)
-- The Settings fields you can modify from the panel device settings screen are in random order (Edge issue)
 - Settings field changes may result in multiple duplicate notifications to the driver (Edge issue)
 - Switches and status attributes may not get initially set correctly when devices are first created (Edge issue).  However they will eventually correct themselves as DSC updates are received, and/or an alarm/disarm cycle is completed 
