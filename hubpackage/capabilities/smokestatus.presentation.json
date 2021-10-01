@@ -1,0 +1,48 @@
+{
+    "dashboard": {
+        "states": [],
+        "actions": [],
+        "basicPlus": []
+    },
+    "detailView": [
+        {
+            "label": "Zone Status",
+            "displayType": "state",
+            "state": {
+                "label": "{{smokeStatus.value}}"
+            }
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "label": "Zone Status",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "Clear",
+                            "value": "Clear",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Smoke detected",
+                            "value": "Smoke detected",
+                            "type": "active"
+                        },
+                        {
+                            "key": "ALARM!",
+                            "value": "ALARM!",
+                            "type": "active"
+                        }
+                    ],
+                    "value": "smokeStatus.value",
+                    "valueType": "string"
+                }
+            }
+        ],
+        "actions": []
+    },
+    "id": "partyvoice23922.smokestatus",
+    "version": 1
+}

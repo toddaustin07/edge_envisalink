@@ -377,6 +377,90 @@ local motionstatus = [[
 }
 ]]
 
+local smokestatus = [[
+{
+    "id": "partyvoice23922.smokestatus",
+    "version": 1,
+    "status": "proposed",
+    "name": "smokestatus",
+    "attributes": {
+        "smokeStatus": {
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string",
+                        "maxLength": 16
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "value"
+                ]
+            },
+            "enumCommands": []
+        }
+    },
+    "commands": {}
+}
+]]
+
+local costatus = [[
+{
+    "id": "partyvoice23922.costatus",
+    "version": 1,
+    "status": "proposed",
+    "name": "costatus",
+    "attributes": {
+        "coStatus": {
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string",
+                        "maxLength": 16
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "value"
+                ]
+            },
+            "enumCommands": []
+        }
+    },
+    "commands": {}
+}
+]]
+
+local waterstatus = [[
+{
+    "id": "partyvoice23922.waterstatus",
+    "version": 1,
+    "status": "proposed",
+    "name": "waterstatus",
+    "attributes": {
+        "waterStatus": {
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string",
+                        "maxLength": 16
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "value"
+                ]
+            },
+            "enumCommands": []
+        }
+    },
+    "commands": {}
+}
+]]
+
 local zonebypass = [[
 {
     "id": "partyvoice23922.zonebypass",
@@ -429,6 +513,9 @@ return {
 	partitioncommand = partitioncommand,
 	dscselectswitch = dscselectswitch,
 	contactstatus = contactstatus,
-	motionstatus = motionstatus,
+    motionstatus = motionstatus,
+    smokestatus = smokestatus,
+    costatus = costatus,
+    waterstatus = waterstatus,
 	zonebypass = zonebypass,
 }

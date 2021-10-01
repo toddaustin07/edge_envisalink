@@ -1,16 +1,16 @@
-name: DSC.contactzone.v1
+name: DSC.smokezone.v1
 components:
 - id: main
   capabilities:
-    - id: contactSensor
+    - id: smokeDetector
       version: 1
-    - id: partyvoice23922.contactstatus
+    - id: partyvoice23922.smokestatus
       version: 1
     - id: partyvoice23922.zonebypass
       version: 1
   categories:
-    - name: ContactSensor
+    - name: SmokeDetector
 metadata:
-  vid: d5e645fe-cb31-39e8-a6c9-505d587dc37a
+  vid: b4cc4434-a608-3f6e-aba5-491c2d2f18da
   mnmn: fE4b
 

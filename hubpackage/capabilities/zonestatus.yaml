@@ -1,0 +1,17 @@
+id: partyvoice23922.zonestatus
+version: 1
+status: proposed
+name: zonestatus
+attributes:
+  zoneStatus:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+          maxLength: 16
+      additionalProperties: false
+      required:
+        - value
+    enumCommands: []
+commands: {}

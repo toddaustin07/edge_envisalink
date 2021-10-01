@@ -1,16 +1,16 @@
-name: DSC.contactzone.v1
+name: DSC.cozone.v1
 components:
 - id: main
   capabilities:
-    - id: contactSensor
+    - id: carbonMonoxideDetector
       version: 1
-    - id: partyvoice23922.contactstatus
+    - id: partyvoice23922.costatus
       version: 1
     - id: partyvoice23922.zonebypass
       version: 1
   categories:
-    - name: ContactSensor
+    - name: SmokeDetector
 metadata:
-  vid: d5e645fe-cb31-39e8-a6c9-505d587dc37a
+  vid: 657dd3da-3ffa-387a-888e-e5c29fc95f04
   mnmn: fE4b
 

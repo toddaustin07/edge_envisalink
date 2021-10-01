@@ -102,9 +102,15 @@ local function disconnect()
 	connected = false
 	loggedin = false
 	
-	-- probably don't need this here, but just in case, cancel any outstanding retry timers
-	if timers.reconnect then; evlDriver:cancel_timer(timers.reconnect); timers.reconnect = nil; end
-  if timers.waitlogin then; evlDriver:cancel_timer(timers.waitlogin); timers.waitlogin = nil; end
+  if timers.reconnect then
+		driver:cancel_timer(timers.reconnect)
+	end
+	if timers.waitlogin then
+		driver:cancel_timer(timers.waitlogin)
+	end
+	timers.reconnect = nil
+	socket.sleep(.1)
+	timers.waitlogin = nil
 	
 	if clientsock then
 		evlDriver:unregister_channel_handler(clientsock)
@@ -276,7 +282,7 @@ local function build_event_table(code, parameters, event, message)
 			local partnum = tonumber(parameters:sub(1,1))
 			if conf.partitions[partnum] then
 				if code == 655 then
-					--send_command('071', '1*1#')						-- WHY????
+					send_command('071', '1*1#')						-- WHY????
 				end
 				
 				local codeMap = {

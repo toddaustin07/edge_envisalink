@@ -33,23 +33,30 @@ local devhandler = require "device_handler"
 evlClient.inithandler(devhandler)
 
 -- Global variables
-conf = require "config"
 evlDriver = {}
 timers = { ['reconnect'] = nil, ['waitlogin'] = nil }
 armedflag = false
+ZTYPE = 'zonetype'
 
--- Module variables
-local saveconf = {}
-saveconf['envisalink'] = {}
-saveconf['envisalink']['ip'] = conf.envisalink.ip 
-saveconf['envisalink']['port'] = conf.envisalink.port
-saveconf['envisalink']['pass'] = conf.envisalink.pass
-saveconf['alarmcode'] = conf.alarmcode
+-- Gobal Configuration table (populated via primary Panel device Settings)
 
-local devices_created = 0
-local devices_initialized = 0
-local initialized = false
-local DASHCONFIG = 'dashconfig'
+conf = {  ['usernames']   = { [40] = 'Edge', [80] = 'MyUser2' },
+          ['envisalink']  = {
+                              ['ip'] = '192.168.1.nnn',
+                              ['port'] = 4025,
+                              ['pass'] = 'user'
+                            },
+          ['alarmcode']   = 1111,
+          ['partitions']  = { 'DSC Panel', },
+          ['zones']       = {
+                              {
+                                ['name'] = 'Zone 1',
+                                ['type'] = 'fubar',
+                                ['partition'] = 1
+                              },
+                            }
+        }
+
 
 -- Custom Capabilities (global)
 ---[[
@@ -64,6 +71,9 @@ cap_partitioncommand = capabilities.build_cap_from_json_string(capdefs.partition
 cap_dscselectswitch = capabilities.build_cap_from_json_string(capdefs.dscselectswitch)
 cap_contactstatus = capabilities.build_cap_from_json_string(capdefs.contactstatus)
 cap_motionstatus = capabilities.build_cap_from_json_string(capdefs.motionstatus)
+cap_smokestatus = capabilities.build_cap_from_json_string(capdefs.smokestatus)
+cap_costatus = capabilities.build_cap_from_json_string(capdefs.costatus)
+cap_waterstatus = capabilities.build_cap_from_json_string(capdefs.waterstatus)
 cap_zonebypass = capabilities.build_cap_from_json_string(capdefs.zonebypass)
 
 
@@ -76,6 +86,9 @@ capabilities["partyvoice23922.partitioncommand"] = cap_partitioncommand
 capabilities["partyvoice23922.dscselectswitch"] = cap_dscselectswitch
 capabilities["partyvoice23922.contactstatus"] = cap_contactstatus
 capabilities["partyvoice23922.motionstatus"] = cap_motionstatus
+capabilities["partyvoice23922.smokestatus"] = cap_smokestatus
+capabilities["partyvoice23922.costatus"] = cap_costatus
+capabilities["partyvoice23922.waterstatus"] = cap_waterstatus
 capabilities["partyvoice23922.zonebypass"] = cap_zonebypass
 --]]
 
@@ -89,9 +102,21 @@ cap_partitioncommand = capabilities["partyvoice23922.partitioncommand"]
 cap_dscselectswitch = capabilities["partyvoice23922.dscselectswitch"]
 cap_contactstatus = capabilities["partyvoice23922.contactstatus"]
 cap_motionstatus = capabilities["partyvoice23922.motionstatus"]
+cap_smokestatus = capabilities["partyvoice23922.smokestatus"]
+cap_costatus = capabilities["partyvoice23922.costatus"]
+cap_waterstatus = capabilities["partyvoice23922.waterstatus"]
 cap_zonebypass = capabilities["partyvoice23922.zonebypass"]
 --]]
 
+-- Module variables
+local initialized = false
+local devices_initialized = 0
+local total_devices = 0
+local DASHCONFIG = 'dashconfig'
+local valid_addr = false
+
+
+-- Initialize connection to Envisalink
 local function connect_to_envisalink()
 
   local client = evlClient.connect()
@@ -138,6 +163,105 @@ local function connect_to_envisalink()
 
 end
 
+-- Check IP:Port address for proper format & values
+local function validate_address(lanAddress)
+
+  local valid = true
+  
+  local ip = lanAddress:match('^(%d.+):')
+  local port = tonumber(lanAddress:match(':(%d+)$'))
+  
+  if ip then
+    local chunks = {ip:match("^(%d+)%.(%d+)%.(%d+)%.(%d+)$")}
+    if #chunks == 4 then
+      for i, v in pairs(chunks) do
+        if tonumber(v) > 255 then 
+          valid = false
+          break
+        end
+      end
+    else
+      valid = false
+    end
+  else
+    valid = false
+  end
+  
+  
+  if port then
+    if type(port) == 'number' then
+      if (port < 1) or (port > 65535) then 
+        valid = false
+      end
+    else
+      valid = false
+    end
+  else
+    valid = false
+  end
+  
+  if valid then
+    return ip, port
+  else
+    return nil
+  end
+      
+end
+
+
+-- Setup config preferences for Envisalink connection & DSC alarm code
+local function initconfig(device)
+
+  local ip
+  local port
+  local addr_is_valid = false
+      
+  ip, port = validate_address(device.preferences.lanAddress)
+  if ip ~= nil then
+    conf.envisalink.ip = ip
+    conf.envisalink.port = port
+    addr_is_valid = true
+  else
+    log.warn ('Invalid Envisalink LAN address')
+  end
+  
+  
+  conf.envisalink.pass = device.preferences.envPass
+  
+  if device.preferences.envPass:match('%W') == nil then
+    if device.preferences.envPass:len() < 4 then
+      log.warn ('Invalid Envisalink password (too short)')
+    end
+  else
+    log.warn ('Invalid Envisalink password (not alphanumeric)')
+  end
+  
+    
+  conf.alarmcode = tonumber(device.preferences.alarmCode)
+  
+  if conf.alarmcode ~= nil then
+    if string.len(device.preferences.alarmCode) ~= 4 then
+      log.warn('Invalid DSC alarmcode (not 4 digits')
+    end
+  else
+    log.warn('Invalid DSC alarmcode (not a number)')
+  end
+  
+  log.info (string.format('Using config prefs: %s:%d, password: %s, alarmcode: %d', conf.envisalink.ip, conf.envisalink.port, conf.envisalink.pass, conf.alarmcode))
+  return(addr_is_valid)
+
+end
+
+
+local function disptable(table, tab)
+
+  for key, value in pairs(table) do
+    log.debug (tab .. key, value)
+    if type(value) == 'table' then
+      disptable(value, '  ' .. tab)
+    end
+  end
+end
 
 -----------------------------------------------------------------------
 --										COMMAND HANDLERS
@@ -170,6 +294,7 @@ local function handle_dashswitch(_, device, command)
   
 end
 
+
 local function handle_stayswitch(_, device, command)
   
   log.debug("Stay switch command received = " .. command.command, command.args.value)
@@ -187,6 +312,7 @@ local function handle_stayswitch(_, device, command)
   
 end
 
+
 local function handle_awayswitch(_, device, command)
   
   log.debug("Away switch command received = " .. command.command, command.args.value)
@@ -203,6 +329,7 @@ local function handle_awayswitch(_, device, command)
 	end
   
 end
+
 
 local function handle_partcmd(_, device, command)
   
@@ -228,6 +355,7 @@ local function handle_partcmd(_, device, command)
   
 end
 
+
 local function handle_select(_, device, command)
   
   log.debug("Select switch command received = " .. command.command, command.args.value)
@@ -237,6 +365,7 @@ local function handle_select(_, device, command)
   device:set_field(DASHCONFIG, command.args.value, { ['persist'] = true })
   
 end
+
 
 local function handle_zonebypass(_, device, command)
 
@@ -256,22 +385,34 @@ local function handle_zonebypass(_, device, command)
   
 end
 
-------------------------------------------------------------------------
+--======================================================================
 --                REQUIRED EDGE DRIVER HANDLERS
-------------------------------------------------------------------------
+--======================================================================
 
 -- Lifecycle handler to initialize existing devices AND newly discovered devices
 local function device_init(driver, device)
-  
-  log.debug(device.id .. ": " .. device.device_network_id .. "> INITIALIZING")
+
+  log.debug(device.id .. ": " .. device.device_network_id .. " > INITIALIZING")
   
   device:offline()
-  
   devices_initialized = devices_initialized + 1
   
-  -- Initialize device attributes & switches
+  -- Initialize device config
   
+  if device.device_network_id:find('DSC:Z', 1, 'plaintext') then
   
+    local zonenum = tonumber(device.device_network_id:match('DSC:Z(%d+)'))
+    
+    conf.zones[zonenum] = {
+                           ['name'] = string.format ('Partition %d Zone %d', 1, zonenum),
+                           ['type'] = device.model:match('^DSC%-(%w+)'),
+                           ['partition'] = 1,
+                          }
+    
+    log.debug (string.format('Zone configured: %s (type=%s)', conf.zones[zonenum].name, conf.zones[zonenum].type))
+    
+  end
+    
   if device.device_network_id:find('DSC:P', 1, 'plaintext') then
   
     local dashconfig = device:get_field(DASHCONFIG)
@@ -280,37 +421,33 @@ local function device_init(driver, device)
     else
       device:emit_event(cap_dscselectswitch.switch('type: Arm STAY'))
     end
-    
-    -- If this is the first panel, check if stored preferences exist and if so, override config values
+
+    -- If this is the Primary panel
     if device.device_network_id:match('DSC:P(%d+)') == '1' then
-      local ip = device:get_field('ipAddress')
-      if ip then; conf.envisalink.ip = ip; end
-      local port = device:get_field('portNumber')
-      if port then; conf.envisalink.port = tonumber(port); end
-      local pass = device:get_field('envPass')
-      if pass then; conf.envisalink.pass = pass; end
-      local code = device:get_field('alarmCode')
-      if code then; conf.alarmcode = tonumber(code); end
-       
-      log.debug (string.format('Using config prefs: %s:%d, %s, %d', conf.envisalink.ip, conf.envisalink.port, conf.envisalink.pass, conf.alarmcode))
-      socket.sleep(.5)
-      device:emit_event(cap_dscdashswitch.switch('off'))
-      device:emit_event(cap_dscstayswitch.switch('off'))
-      device:emit_event(cap_dscawayswitch.switch('off'))
-    end
-  end
-  
-  if devices_initialized == (#conf.zones + #conf.partitions) then
-
-    initialized = true
-    log.info ('All configured DSC Devices initialized')
-    
-
-    if not evlClient.is_loggedin() then             -- don't think it ever would be at this point
       
-      if not connect_to_envisalink() then
-        evlClient.reconnect()
+      log.debug ('Settings preferences...')
+      disptable(device.preferences, '  ')
+      
+      valid_addr = initconfig(device)                   -- initialize config from preferences
+      
+      initialized = true 
+    
+    end    
+  end
+        
+  if devices_initialized == total_devices then
+  
+    if valid_addr == true then
+    
+      if not evlClient.is_loggedin() then              -- don't think it ever would be at this point
+        if not evlClient.is_connected() then
+          if not connect_to_envisalink() then
+            evlClient.reconnect()
+          end
+        end
       end
+    else
+      log.debug ('Cannot connect yet; Envisalink address needs configuring')
     end
   end
 
@@ -320,9 +457,7 @@ end
 -- Called when device was just created in SmartThings
 local function device_added (driver, device)
 
-  log.info(device.id .. ": " .. device.device_network_id .. "> successfully added")
-  
-  devices_created = devices_created + 1
+  log.info(device.id .. ": " .. device.device_network_id .. " > ADDED")
   
   if device.device_network_id:find('DSC:Z', 1, 'plaintext') then
   
@@ -334,6 +469,7 @@ local function device_added (driver, device)
     device:emit_event(cap_dscdashswitch.switch('off'))
     device:emit_event(cap_dscstayswitch.switch('off'))
     device:emit_event(cap_dscawayswitch.switch('off'))
+    
   end
   
 end
@@ -350,19 +486,25 @@ end
 -- Called when device was deleted via mobile app
 local function device_removed(_, device)
   
-  log.warn(device.id .. ": " .. device.device_network_id .. "> removed")
+  log.warn(device.id .. ": " .. device.device_network_id .. " > REMOVED")
   
-  devices_initialized = devices_initialized - 1
+  local zonenum = tonumber(device.device_network_id:match('^DSC:Z(%d+)'))
   
-  -- shutdown if no more devices 
-  if devices_initialized == 0 then
-  
-    log.info ('All devices removed; discontinuing Envisalink connection')
-    devices_created = 0
-    initialized = false
-    evlClient.disconnect()
+  if zonenum then
+    conf.zones[zonenum].name = nil
+    conf.zones[zonenum].type = nil
+    conf.zones[zonenum].partition = nil
   end
+
+  -- shutdown if no more devices 
   
+  local device_list = evlDriver:get_devices()
+  
+  if #device_list == 0 then
+    log.info ('All devices removed; shutting down Envisalink connection')
+    initialized = false
+    evlClient.disconnect()  
+  end
 end
 
 
@@ -372,53 +514,11 @@ local function handler_driverchanged(driver, device, event, args)
 
 end
 
-
+-- **************************
+-- Handle changes in Settings
+-- **************************
 local function handler_infochanged (driver, device, event, args)
   
-  local function validate_address(lanAddress)
-
-    local valid = true
-    
-    local ip = lanAddress:match('^(%d.+):')
-    local port = tonumber(lanAddress:match(':(%d+)$'))
-    
-    if ip then
-      local chunks = {ip:match("^(%d+)%.(%d+)%.(%d+)%.(%d+)$")}
-      if #chunks == 4 then
-        for i, v in pairs(chunks) do
-          if tonumber(v) > 255 then 
-            valid = false
-            break
-          end
-        end
-      else
-        valid = false
-      end
-    else
-      valid = false
-    end
-    
-    
-    if port then
-      if type(port) == 'number' then
-        if (port < 1) or (port > 65535) then 
-          valid = false
-        end
-      else
-        valid = false
-      end
-    else
-      valid = false
-    end
-    
-    if valid then
-      return ip, port
-    else
-      return nil
-    end
-        
-  end
-
   log.debug ('Info changed handler invoked')
   
   
@@ -429,7 +529,7 @@ local function handler_infochanged (driver, device, event, args)
     -- Did preferences change?
     if args.old_st_store.preferences then
     
-      ---[[
+      --[[
       log.debug ('OLD preferences:')
       for key, value in pairs(args.old_st_store.preferences) do
         log.debug ('\t' .. key, value)
@@ -441,99 +541,70 @@ local function handler_infochanged (driver, device, event, args)
       --]]
       
       local changed = false
-      local reconnect = false
+      local connection_changed = false
       
-      -- Examine each preference setting to see if it changed
+      -- Examine preference settings to see if it changed
+     
+      -- LAN ADDRESS
      
       if args.old_st_store.preferences.lanAddress ~= device.preferences.lanAddress then
         changed = true
-        local store = false
-        
-        if device.preferences.lanAddress ~= nil then
-
-          local ip, port = validate_address(device.preferences.lanAddress)
-          
-          if ip then
-            if (ip ~= conf.envisalink.ip) or (port ~= conf.envisalink.port) then
-              conf.envisalink.ip = ip
-              conf.envisalink.port = port
-              reconnect = true
-              store = true
-            end
-          else
-            log.warn('Invalid IP:port address override - ignored')
-          end
-          
-        else  
-          conf.envisalink.ip = saveconf.envisalink.ip
-          conf.envisalink.port = saveconf.envisalink.port
-          store = true
-          
-        end
-        if store then
-          device:set_field('ipAddress', conf.envisalink.ip, {'persist'})
-          device:set_field('portNumber', conf.envisalink.port, {'persist'})
-        end
+        connection_changed = true
+        log.debug (string.format('LAN address changed from %s to %s',args.old_st_store.preferences.lanAddress, device.preferences.lanAddress))
       end
 
-      if args.old_st_store.preferences.envPass ~= device.preferences.envPass then
+      -- ENVISALINK PASSWORD, ALARM CODE
+
+      if (args.old_st_store.preferences.envPass ~= device.preferences.envPass) or
+          (args.old_st_store.preferences.alarmCode ~= device.preferences.alarmCode) then
         changed = true
-        if device.preferences.envPass ~= nil then
-          conf.envisalink.pass = device.preferences.envPass
-        else
-          conf.envisalink.pass = saveconf.envisalink.pass
-        end
-        device:set_field('envPass', conf.envisalink.pass, {'persist'})
       end
       
-      if args.old_st_store.preferences.alarmCode ~= device.preferences.alarmCode then
-        changed = true
-        local valid = false
-        local store = false
-        local codenum
-        
-        if device.preferences.alarmCode ~= nil then
-          -- Validate to be sure it's a 4-digit number
-          if string.len(device.preferences.alarmCode) == 4 then
-            codenum = tonumber(device.preferences.alarmCode)
-            if type(codenum) == 'number' then
-              valid = true
-            end
-          end
-          
-          if valid then
-            conf.alarmcode = codenum
-            store = true
-          else
-            log.warn('Invalid alarmcode override - ignored')
-          end
-        else
-          conf.alarmcode = saveconf.alarmcode
-          store = true
-        end
-        if store then
-          device:set_field('alarmCode', conf.alarmcode, {'persist'})
-        end
-      end
-       
+      
       if changed then  
-        log.info (string.format('Using config prefs: %s:%d, password: %s, alarmcode: %d', conf.envisalink.ip, conf.envisalink.port, conf.envisalink.pass, conf.alarmcode))
+        valid_addr = initconfig(device)
+      
+      -- Determine if need to (re) connect
+      
+        if connection_changed and valid_addr then
+        
+          log.info ('Renewing connection to Envisalink')
+
+          if timers.reconnect then
+            driver:cancel_timer(timers.reconnect)
+          end
+          if timers.waitlogin then
+            driver:cancel_timer(timers.waitlogin)
+          end
+          timers.reconnect = nil
+          socket.sleep(.1)
+          timers.waitlogin = nil
+            
+          if evlClient.is_connected() then
+            evlClient.disconnect()
+          end
+          
+          if not connect_to_envisalink() then
+            evlClient.reconnect()
+          end
+        end
       end
       
-      if reconnect then
-        log.info ('Renewing connection to Envisalink')
-
-        if timers.reconnect then; driver:cancel_timer(timers.reconnect); timers.reconnect = nil; end
-        if timers.waitlogin then; driver:cancel_timer(timers.waitlogin); timers.waitlogin = nil; end
-          
-        if evlClient.is_connected() then
-          evlClient.disconnect()
-        end
-        
-        if not connect_to_envisalink() then
-          evlClient.reconnect()
-        end
-      end
+      -- process zone type updates
+      
+      devhandler.proczonesetting(device, 1, args.old_st_store.preferences.zone1, device.preferences.zone1, 1)
+      devhandler.proczonesetting(device, 2, args.old_st_store.preferences.zone2, device.preferences.zone2, 1)
+      devhandler.proczonesetting(device, 3, args.old_st_store.preferences.zone3, device.preferences.zone3, 1)
+      devhandler.proczonesetting(device, 4, args.old_st_store.preferences.zone4, device.preferences.zone4, 1)
+      devhandler.proczonesetting(device, 5, args.old_st_store.preferences.zone5, device.preferences.zone5, 1)
+      devhandler.proczonesetting(device, 6, args.old_st_store.preferences.zone6, device.preferences.zone6, 1)
+      devhandler.proczonesetting(device, 7, args.old_st_store.preferences.zone7, device.preferences.zone7, 1)
+      devhandler.proczonesetting(device, 8, args.old_st_store.preferences.zone8, device.preferences.zone8, 1)
+      devhandler.proczonesetting(device, 9, args.old_st_store.preferences.zone9, device.preferences.zone9, 1)
+      devhandler.proczonesetting(device, 10, args.old_st_store.preferences.zone10, device.preferences.zone10, 1)
+      devhandler.proczonesetting(device, 11, args.old_st_store.preferences.zone11, device.preferences.zone11, 1)
+      devhandler.proczonesetting(device, 12, args.old_st_store.preferences.zone11, device.preferences.zone12, 1)
+      
     end
   end
 end
@@ -554,19 +625,19 @@ local function lan_info_changed_handler(driver, hub_ipv4)
 end
 
 
--- Created DSC devices based on configuration file (not LAN discovery)
+-- Create only Primary Panel Device
 local function discovery_handler(driver, _, should_continue)
   
   if not initialized then
   
-    log.info("Starting device creation")
+    log.info("Creating Primary Panel Device")
     
-    devhandler.devicesetup()
+    devhandler.createpanel(1)
     
-    log.debug("Exiting device creation")
+    log.debug("Exiting Discovery")
     
   else
-    log.info ('DSC Devices already created')
+    log.info ('Primary DSC Panel already created')
   end
 end
 
@@ -608,5 +679,12 @@ evlDriver = Driver("evlDriver", {
 
 log.info ('Driver Started: supporting EyezOn EnvisaLink 2DS/3/4')
 
+local device_list = evlDriver:get_devices()
+if #device_list > 1 then
+  log.debug ('Number of devices assigned to this driver: ', #device_list)
+  total_devices = #device_list
+else
+  total_devices = 1
+end
 
 evlDriver:run()

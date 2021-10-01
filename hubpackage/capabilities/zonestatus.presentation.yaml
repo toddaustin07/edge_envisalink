@@ -1,0 +1,29 @@
+dashboard:
+  states: []
+  actions: []
+  basicPlus: []
+detailView:
+  - label: Zone Status
+    displayType: state
+    state:
+      label: '{{zoneStatus.value}}'
+automation:
+  conditions:
+    - label: Zone Status
+      displayType: list
+      list:
+        alternatives:
+          - key: ALARM!
+            value: ALARM!
+            type: active
+          - key: Bypassed
+            value: Bypassed
+            type: active
+          - key: Trouble
+            value: Trouble
+            type: active
+        value: zoneStatus.value
+        valueType: string
+  actions: []
+id: partyvoice23922.zonestatus
+version: 1

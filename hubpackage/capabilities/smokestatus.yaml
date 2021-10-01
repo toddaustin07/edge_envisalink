@@ -1,0 +1,17 @@
+id: partyvoice23922.smokestatus
+version: 1
+status: proposed
+name: smokestatus
+attributes:
+  smokeStatus:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+          maxLength: 16
+      additionalProperties: false
+      required:
+        - value
+    enumCommands: []
+commands: {}

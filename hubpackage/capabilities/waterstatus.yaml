@@ -1,0 +1,17 @@
+id: partyvoice23922.waterstatus
+version: 1
+status: proposed
+name: waterstatus
+attributes:
+  waterStatus:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+          maxLength: 16
+      additionalProperties: false
+      required:
+        - value
+    enumCommands: []
+commands: {}

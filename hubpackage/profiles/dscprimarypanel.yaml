@@ -1,4 +1,4 @@
-name: DSC.panel.v3
+name: DSC.primarypanel.v1
 components:
 - id: main
   capabilities:
@@ -31,10 +31,10 @@ preferences:
       stringType: text
       minLength: 12
       maxLength: 20
-      default: '192.168.1.xxx:4025'
-  - title: "Login password"
+      default: '192.168.1.nnn:4025'
+  - title: "Envisalink login password"
     name: envPass
-    description: "Envisalink login password"
+    description: "min 4-char alphanumeric password"
     required: true
     preferenceType: string
     definition:
@@ -51,16 +51,9 @@ preferences:
       stringType: password
       minLength: 4
       maxLength: 4
-      default: "5555"
-  - title: "Partition 2"
-    name: part2Name
-    description: "Partition 2 Panel Name"
-    required: false
-    preferenceType: string
-    definition:
-      stringType: text
-      default: ""
+      default: "1111"
   - title: "Zone 1"
+    name: zone1
     description: "Zone 1 Type"
     required: true
     preferenceType: enumeration
@@ -69,10 +62,12 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
-      default: contact
+        unused: "unused"
+      default: unused
   - title: "Zone 2"
+    name: zone2
     description: "Zone 2 Type"
     required: false
     preferenceType: enumeration
@@ -81,11 +76,12 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
         unused: "unused"
       default: unused
   - title: "Zone 3"
+    name: zone3
     description: "Zone 3 Type"
     required: false
     preferenceType: enumeration
@@ -94,11 +90,12 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
         unused: "unused"
       default: unused
   - title: "Zone 4"
+    name: zone4
     description: "Zone 4 Type"
     required: false
     preferenceType: enumeration
@@ -107,11 +104,12 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
         unused: "unused"
       default: unused
   - title: "Zone 5"
+    name: zone5
     description: "Zone 5 Type"
     required: false
     preferenceType: enumeration
@@ -120,11 +118,12 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
         unused: "unused"
       default: unused
   - title: "Zone 6"
+    name: zone6
     description: "Zone 6 Type"
     required: false
     preferenceType: enumeration
@@ -133,11 +132,12 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
         unused: "unused"
       default: unused
   - title: "Zone 7"
+    name: zone7
     description: "Zone 7 Type"
     required: false
     preferenceType: enumeration
@@ -146,11 +146,12 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
         unused: "unused"
       default: unused
   - title: "Zone 8"
+    name: zone8
     description: "Zone 8 Type"
     required: false
     preferenceType: enumeration
@@ -159,11 +160,12 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
         unused: "unused"
       default: unused
   - title: "Zone 9"
+    name: zone9
     description: "Zone 9 Type"
     required: false
     preferenceType: enumeration
@@ -172,11 +174,12 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
         unused: "unused"
       default: unused
   - title: "Zone 10"
+    name: zone10
     description: "Zone 10 Type"
     required: false
     preferenceType: enumeration
@@ -185,11 +188,12 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
         unused: "unused"
       default: unused
   - title: "Zone 11"
+    name: zone11
     description: "Zone 11 Type"
     required: false
     preferenceType: enumeration
@@ -198,11 +202,12 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
         unused: "unused"
       default: unused
   - title: "Zone 12"
+    name: zone12
     description: "Zone 12 Type"
     required: false
     preferenceType: enumeration
@@ -211,7 +216,7 @@ preferences:
         contact: "contact sensor"
         motion: "motion detector"
         smoke: "smoke detector"
-        co2: "carbon monoxide detector"
+        co: "carbon monoxide detector"
         water: "moisture detector"
         unused: "unused"
       default: unused

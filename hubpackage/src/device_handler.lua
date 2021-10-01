@@ -17,9 +17,6 @@
   Samsung SmartThings Edge Driver for Envisalink - module to handle SmartThings device setup and state updates
   based on Envisalink messages
 
-  ** This code is a port based on the alarmserver Python package originally developed by donnyk+envisalink@gmail.com,
-  which also included subsequent modifications/enhancements by leaberry@gmail.com, jordan@xeron.cc, ralphtorchia1@gmail.com
-
 --]]
 
 
@@ -31,12 +28,19 @@ local socket = require "cosock.socket"
 
 -- Device capability profiles
 local profiles = {
-  ["panel"] = "DSC.panel.v3",
+  ["primarypanel"] = "DSC.primarypanel.v1",
+  ["secondarypanel"] = "DSC.secondarypanel.v1",
   ["contact"] = "DSC.contactzone.v1",
   ["motion"] = "DSC.motionzone.v1",
-  ["smoke"] = "DSC.contactzone.v1",		-- ** Needs work
-  ["co"] = "DSC.contactzone.v1",			-- ** Needs work
+  ["smoke"] = "DSC.smokezone.v1",	
+  ["co"] = "DSC.cozone.v1",
+  ["water"] = "DSC.waterzone.v1",
 }
+
+-- Device metadata
+local MFG_NAME = 'Digital Security Controls'
+local PANEL_MODEL = 'DSC panel'
+local VEND_LABEL = 'PowerSeries'
 
 -- Module variables
 local ALARMMEMORY = {}
@@ -48,7 +52,7 @@ local function emitSensorState(msg, sensorstate)
 	local device_list = evlDriver:get_devices()
 	for _, device in ipairs(device_list) do
 		if device.device_network_id:match('^DSC:Z(%d+)') == msg.value then
-			local zonetype = device.model:match('^DSC (%g+)')
+			local zonetype = device.model:match('^DSC%-(%w+)')
 			if zonetype == 'contact' then
 				device:emit_event(capabilities.contactSensor.contact(sensorstate))
 	
@@ -75,21 +79,21 @@ local function emitZoneStatus(msg, zonestatus)
 	local device_list = evlDriver:get_devices()
 	for _, device in ipairs(device_list) do
 		if device.device_network_id:match('^DSC:Z(%d+)') == msg.value then
-			local zonetype = device.model:match('^DSC (%g+)')
+			local zonetype = device.model:match('^DSC%-(%w+)')
 			if zonetype == 'contact' then
 				device:emit_event(cap_contactstatus.contactStatus(zonestatus))
 	
 			elseif zonetype == 'motion' then
 				device:emit_event(cap_motionstatus.motionStatus(zonestatus))
 				
-			elseif zonetype == 'smoke' then				-- NEED TO ADD ZONE STATUS CAPABILITIES FOR THESE NEXT 3
-				local x = 1
+			elseif zonetype == 'smoke' then
+				device:emit_event(cap_smokestatus.smokeStatus(zonestatus))
 			
 			elseif zonetype == 'co' then
-				local x = 1
+				device:emit_event(cap_costatus.coStatus(zonestatus))
 				
 			elseif zonetype == 'water' then
-				local x = 1
+				device:emit_event(cap_waterstatus.waterStatus(zonestatus))
 				
 			end
 		end
@@ -103,7 +107,7 @@ local function proc_zone_msg(msg)
 													['contact'] = { ['open'] = 'open', ['closed'] = 'closed' },
 													['motion'] = { ['open'] = 'active', ['closed'] = 'inactive' },
 													['smoke'] = { ['smoke'] = 'detected',	['clear'] = 'clear' },
-													['o2'] = { ['smoke'] = 'detected', ['clear'] = 'clear' },
+													['co'] = { ['smoke'] = 'detected', ['clear'] = 'clear' },
 													['water'] = { ['open'] = 'wet', ['closed'] = 'dry' },
 												}
 	
@@ -111,33 +115,39 @@ local function proc_zone_msg(msg)
 												['contact'] = { ['open'] = 'Open',	['closed'] = 'Closed' },
 												['motion'] = { ['open'] = 'Motion', ['closed'] = 'No motion' },
 												['smoke'] = { ['smoke'] = 'Smoke detected', ['clear'] = 'Clear' },
-												['o2'] = { ['smoke'] = 'O2 detected', ['clear'] = 'Clear' },
+												['co'] = { ['smoke'] = 'CO detected', ['clear'] = 'Clear' },
 												['water'] = { ['open'] = 'Wet', ['closed'] = 'Dry' },
 											}
 	
 	local zonetype = conf.zones[tonumber(msg.value)].type
 	
-	if (msg.status == 'open') or (msg.status == 'closed') or 
-		 (msg.status == 'smoke') or (msg.status == 'clear') then
-		
-		local sensstate = SENSORSTATE[zonetype][msg.status]
-		if sensstate == nil then; sensstate = msg.status; end 
-		
-		emitSensorState(msg, sensstate)
-	end	
+	log.debug (string.format('Processing zone update; zonetype= >>%s<<', zonetype))
 	
-	if msg.status == 'alarm' then
-		ALARMMEMORY[tonumber(msg.value)] = true
-		emitZoneStatus(msg, 'ALARM!')
-	end
+	if zonetype ~= nil then
 	
-	if not ALARMMEMORY[tonumber(msg.value)] then
-		local zonestat = ZONESTATUS[zonetype][msg.status]
-		if zonestat == nil then; zonestat = msg.status; end
+		if (msg.status == 'open') or (msg.status == 'closed') or 
+			 (msg.status == 'smoke') or (msg.status == 'clear') then
+			
+			local sensstate = SENSORSTATE[zonetype][msg.status]
+			if sensstate == nil then; sensstate = msg.status; end 
+			
+			emitSensorState(msg, sensstate)
+		end	
+		
+		if msg.status == 'alarm' then
+			ALARMMEMORY[tonumber(msg.value)] = true
+			emitZoneStatus(msg, 'ALARM!')
+		end
+		
+		if not ALARMMEMORY[tonumber(msg.value)] then
+			local zonestat = ZONESTATUS[zonetype][msg.status]
+			if zonestat == nil then; zonestat = msg.status; end
 
-		emitZoneStatus(msg, zonestat)
+			emitZoneStatus(msg, zonestat)
+		end
+	else
+		log.warn (string.format('Zone %d device not configured', tonumber(msg.value)))
 	end
-	
 end    
 
 
@@ -211,6 +221,7 @@ local function proc_partition_msg(msg)
 														['entrydelay'] = 'Entry delay',
 														['stay'] = 'Armed-stay',
 														['away'] = 'Armed-away',
+														['armed'] = 'Armed',
 														['disarm'] = 'Disarmed',
 														['alarm'] = 'ALARM!!',
 														['chime'] = 'Chime on',
@@ -253,7 +264,9 @@ local function proc_partition_msg(msg)
 						armedflag = false
 					
 					else
-						device:emit_event(cap_partitionstatus.partStatus(display_status))
+						if (msg.status ~= 'armed') then
+							device:emit_event(cap_partitionstatus.partStatus(display_status))
+						end
 					end
 					
 					-- If arming, need to reset zones with alarm memory
@@ -312,56 +325,90 @@ local function process_message(msg)
  
 end
  
-
-local function devicesetup()
-
-	local MFG_NAME = 'Digital Security Controls'
-	local PANEL_MODEL = 'DSC panel'
-	local VEND_LABEL = 'PowerSeries'
+ 
+local function createpanel(partnum)
 
 	-- Create panel device
 	
-	for partnum, partname in ipairs(conf.partitions) do
+	local id = 'DSC:P' .. tostring(partnum)
+	local devprofile
 	
-		local id = 'DSC:P' .. tostring(partnum)
-		local devprofile = profiles['panel']
-		local create_device_msg = {
-																type = "LAN",
-																device_network_id = id,
-																label = partname,
-																profile = devprofile,
-																manufacturer = MFG_NAME,
-																model = PANEL_MODEL,
-																vendor_provided_label = VEND_LABEL,
-															}
-												
-		log.info(string.format("Creating Partition #%d Panel (%s): '%s'", partnum, id, partname))
-
-		assert (evlDriver:try_create_device(create_device_msg), "failed to create panel device")
+	if partnum == 1 then
+		devprofile = profiles['primarypanel']
+	else
+		devprofile = profiles['secondarypanel']
 	end
-	socket.sleep(1.5)
-
-	-- Create zone devices
-	for zonenum, zone in ipairs(conf.zones) do
-	
-		local id = 'DSC:Z' .. tostring(zonenum)
-		local devprofile = profiles[zone.type]
-		local create_device_msg = {
-																type = "LAN",
-																device_network_id = id,
-																label = zone.name,
-																profile = devprofile,
-																manufacturer = MFG_NAME,
-																model = 'DSC ' .. zone.type,
-																vendor_provided_label = VEND_LABEL,
-															}
-                        
-		log.info(string.format("Creating Zone #%d device (%s): '%s'; type=%s", zonenum, id, zone.name, zone.type))
-
-		assert (evlDriver:try_create_device(create_device_msg), "failed to create zone device")
 		
-		socket.sleep(.25)
+	local create_device_msg = {
+															type = "LAN",
+															device_network_id = id,
+															label = conf.partitions[partnum],
+															profile = devprofile,
+															manufacturer = MFG_NAME,
+															model = PANEL_MODEL,
+															vendor_provided_label = VEND_LABEL,
+														}
+												
+	log.info(string.format("Creating Partition #%d Panel (%s): '%s'", partnum, id, conf.partitions[partnum]))
+
+	assert (evlDriver:try_create_device(create_device_msg), "failed to create panel device")
+
+end
+
+
+local function proczonesetting(device, zonenum, oldztype, newztype, partnum)
+
+	if newztype ~= oldztype then
 	
+		log.debug (string.format('Zone %d setting change from %s to %s', zonenum, oldztype, newztype))
+	
+		local alreadyexists = false
+	
+		local device_list = evlDriver:get_devices()
+
+		for _, device in ipairs(device_list) do
+		
+			local znum = tonumber(device.device_network_id:match('^DSC:Z(%d+)'))
+			
+			if znum == zonenum then
+				alreadyexists = true
+				break
+			end
+		end
+
+		if alreadyexists then
+			if newztype == 'unused' then
+				conf.zones[zonenum].name = nil
+				conf.zones[zonenum].type = nil
+				conf.zones[zonenum].partition = nil
+				log.warn (string.format('Zone %d disabled', zonenum))
+			else
+				log.error ('Cannot change device type; user delete required')
+			end
+			-- can't change type of exisiting zone to anything but 'unused'
+		
+		-- It's a new zone device	
+		elseif newztype ~= 'unused' then
+			
+			-- Create zone device
+			
+			local id = 'DSC:Z' .. tostring(zonenum)
+			local name = string.format ('Partition %d Zone %d', partnum, zonenum)
+			local devprofile = profiles[newztype]
+			local create_device_msg = {
+																	type = "LAN",
+																	device_network_id = id,
+																	label = name,
+																	profile = devprofile,
+																	manufacturer = MFG_NAME,
+																	model = 'DSC-' .. newztype,
+																	vendor_provided_label = VEND_LABEL,
+																}
+													
+			log.info(string.format("Creating Zone #%d device (%s): '%s'; type=%s", zonenum, id, name, newztype))
+
+			assert (evlDriver:try_create_device(create_device_msg), "failed to create zone device")
+		end
 	end
 end 
 
@@ -371,20 +418,19 @@ local function onoffline(status)
 	local device_list = evlDriver:get_devices()
 
   for _, device in ipairs(device_list) do
-		
 		if status == 'online' then
 			device:online()
 		elseif status == 'offline' then
 			device:offline()
 		end
-
 	end
 
 end
 
  
 return {
-	devicesetup = devicesetup,
+	createpanel = createpanel,
+	proczonesetting = proczonesetting,
 	process_message = process_message,
 	onoffline = onoffline,
 }

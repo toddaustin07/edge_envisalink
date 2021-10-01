@@ -1,0 +1,17 @@
+id: partyvoice23922.costatus
+version: 1
+status: proposed
+name: costatus
+attributes:
+  coStatus:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+          maxLength: 16
+      additionalProperties: false
+      required:
+        - value
+    enumCommands: []
+commands: {}

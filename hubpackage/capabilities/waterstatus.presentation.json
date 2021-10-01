@@ -1,0 +1,48 @@
+{
+    "dashboard": {
+        "states": [],
+        "actions": [],
+        "basicPlus": []
+    },
+    "detailView": [
+        {
+            "label": "Zone Status",
+            "displayType": "state",
+            "state": {
+                "label": "{{waterStatus.value}}"
+            }
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "label": "Zone Status",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "Dry",
+                            "value": "Dry",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Wet",
+                            "value": "Wet",
+                            "type": "active"
+                        },
+                        {
+                            "key": "ALARM!",
+                            "value": "ALARM!",
+                            "type": "active"
+                        }
+                    ],
+                    "value": "waterStatus.value",
+                    "valueType": "string"
+                }
+            }
+        ],
+        "actions": []
+    },
+    "id": "partyvoice23922.waterstatus",
+    "version": 1
+}

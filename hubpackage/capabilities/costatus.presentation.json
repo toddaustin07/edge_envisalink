@@ -1,0 +1,48 @@
+{
+    "dashboard": {
+        "states": [],
+        "actions": [],
+        "basicPlus": []
+    },
+    "detailView": [
+        {
+            "label": "Zone Status",
+            "displayType": "state",
+            "state": {
+                "label": "{{coStatus.value}}"
+            }
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "label": "Zone Status",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "Clear",
+                            "value": "Clear",
+                            "type": "active"
+                        },
+                        {
+                            "key": "CO detected",
+                            "value": "CO detected",
+                            "type": "active"
+                        },
+                        {
+                            "key": "ALARM!",
+                            "value": "ALARM!",
+                            "type": "active"
+                        }
+                    ],
+                    "value": "coStatus.value",
+                    "valueType": "string"
+                }
+            }
+        ],
+        "actions": []
+    },
+    "id": "partyvoice23922.costatus",
+    "version": 1
+}

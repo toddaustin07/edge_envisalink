@@ -1,16 +1,16 @@
-name: DSC.contactzone.v1
+name: DSC.waterzone.v1
 components:
 - id: main
   capabilities:
-    - id: contactSensor
+    - id: waterSensor
       version: 1
-    - id: partyvoice23922.contactstatus
+    - id: partyvoice23922.waterstatus
       version: 1
     - id: partyvoice23922.zonebypass
       version: 1
   categories:
-    - name: ContactSensor
+    - name: LeakSensor
 metadata:
-  vid: d5e645fe-cb31-39e8-a6c9-505d587dc37a
+  vid: 8d10f831-582b-33be-9c0a-1e626919c9d9
   mnmn: fE4b
 

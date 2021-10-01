@@ -4,13 +4,13 @@ components:
   capabilities:
     - id: motionSensor
       version: 1
-    - id: "partyvoice23922.motionstatus"
+    - id: partyvoice23922.motionstatus
       version: 1
-    - id: "partyvoice23922.zonebypass"
+    - id: partyvoice23922.zonebypass
       version: 1
   categories:
     - name: MotionSensor
 metadata:
-  vid: ST_d492fb41-802a-4732-9ad9-c5d96ed1f6bc
+  vid: e2e6265b-d047-37e7-96c1-6efe76670e52
   mnmn: fE4b
 
