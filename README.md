@@ -1,6 +1,6 @@
 # SmartThings Edge Device Driver for DSC/Envisalink
 
-**NOTE:  THIS DRIVER IS IS IN TESTING**
+**NOTE:  THIS DRIVER IS IN TESTING**
 
 This Edge driver is targeted to users having a DSC security system with an Envisalink board connecting it to the local LAN.  Edge drivers run directly on a SmartThings hub.  The driver will connect with the Envisalink to create and update devices reflecting your DSC system partition panels and zones.
 
