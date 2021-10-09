@@ -1,6 +1,6 @@
 # SmartThings Edge Device Driver for DSC/Envisalink
 
-**NOTE:  THIS DRIVER IS IN TESTING**
+**NOTE:  THIS DRIVER STILL IN DEVELOPMENT AND TEST**
 
 This Edge driver is targeted to users having a DSC security system with an Envisalink board connecting it to the local LAN.  Edge drivers run directly on a SmartThings hub.  The driver will connect with the Envisalink to create and update devices reflecting your DSC system partition panels and zones.
 
@@ -28,7 +28,7 @@ This package does not prereq the Alarmserver package.  However if the user alrea
 ### Caveats
 - This package should be considered beta-level
 - No testing has been done yet for smoke, carbon monoxide (co), or water zones (looking for volunteers)
-- Supports 1 partition only
+- Posted code supports 1 partition only; multi-partition support coming VERY SOON
 - Supports up to 12 zones, but this is a temporary limitation for testing purposes; those with > 12 zones can still run this 
 - SmartThings Edge is still in beta as of September 2021
 
