@@ -35,6 +35,8 @@ This package does not prereq the Alarmserver package.  However if the user alrea
 ### Install the Envisalink Edge Driver to your hub
 Use this channel invite:  https://api.smartthings.com/invitation-web/accept?id=2345136d-b4ea-4e4d-8632-7496a1fb368c
 
+Sign in to SmartThings, enroll your hub to this channel, list the available drivers, and select to install 'Envisalink 2'
+
 #### Start logging (optional)
 Use the CLI to find out the driver ID and start the logger in a window on your computer
 ```
