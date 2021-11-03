@@ -1,2 +1,5 @@
-name: 'Envisalink'
-packageKey: 'envisalink'
+name: 'Envisalink 2'
+packageKey: 'envisalinkv2'
+permissions:
+    lan: {}
+    discovery: {}

@@ -8,9 +8,11 @@ components:
       version: 1
     - id: partyvoice23922.zonebypass
       version: 1
+    - id: refresh
+      version: 1
   categories:
     - name: ContactSensor
 metadata:
-  vid: d5e645fe-cb31-39e8-a6c9-505d587dc37a
+  vid: fca68975-629a-3521-9bb8-b6ae9eaeb4d3
   mnmn: fE4b
 

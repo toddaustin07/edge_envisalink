@@ -1,0 +1,26 @@
+id: partyvoice23922.partitioncommand
+version: 1
+status: proposed
+name: partitionCommand
+attributes:
+  partitionCommand:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+          maxLength: 16
+      additionalProperties: false
+      required:
+        - value
+    setter: setPartitionCommand
+    enumCommands: []
+commands:
+  setPartitionCommand:
+    name: setPartitionCommand
+    arguments:
+      - name: value
+        optional: false
+        schema:
+          type: string
+          maxLength: 16

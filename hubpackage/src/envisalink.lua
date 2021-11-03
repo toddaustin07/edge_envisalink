@@ -154,21 +154,31 @@ doreconnect = function()
 end
 
 		
-local function send_command(code, data, checksum)
+local function send_command(code, data, checksum, force)
 
-	local to_send
-	
-	if checksum == nil then; checksum = true; end
+	if loggedin or force then
 
-	if checksum == true then
-		to_send = code .. data .. get_checksum(code, data) .. '\r\n'
+		local to_send
+		
+		if checksum == nil then; checksum = true; end
+
+		if checksum == true then
+			to_send = code .. data .. get_checksum(code, data) .. '\r\n'
+		else
+			to_send = code .. data .. '\r\n'
+		end
+		
+		log.debug ('TX > ' .. to_send)
+		
+		clientsock:send(to_send)
+		
 	else
-		to_send = code .. data .. '\r\n'
+		if not connected then
+			log.warn ('Cannot send commands to Envisalink: not connected')
+		else
+			log.warn ('Cannot send commands to Envisalink: not logged in')
+		end
 	end
-	
-	log.debug ('TX > ' .. to_send)
-	
-	clientsock:send(to_send)
 	
 end
 
@@ -377,11 +387,11 @@ local function handle_login(code, parameters, event, message)
 
 	if parameters == '3' then
 		log.debug ('Received login password request; sending password')
-		send_command('005', conf.envisalink.pass)
+		send_command('005', conf.envisalink.pass, true, true)
 	elseif parameters == '1' then
 		log.info('Successfully logged in to Envisalink; synching devices...')
 		loggedin = true
-		send_command('001', '')
+		send_command('001', '', true, true)
 		
 	elseif parameters == '0' then
 		log.error ('Envisalink login failed - incorrect password')

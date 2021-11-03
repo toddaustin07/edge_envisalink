@@ -28,7 +28,7 @@ local socket = require "cosock.socket"
 
 -- Device capability profiles
 local profiles = {
-  ["primarypanel"] = "DSC.primarypanel.v1",
+  ["primarypanel"] = "DSC.primarypanel.v2",
   ["secondarypanel"] = "DSC.secondarypanel.v1",
   ["contact"] = "DSC.contactzone.v1",
   ["motion"] = "DSC.motionzone.v1",
@@ -44,7 +44,7 @@ local VEND_LABEL = 'PowerSeries'
 
 -- Module variables
 local ALARMMEMORY = {}
-local STpartitionstatus = ''
+local STpartitionstatus = {[1]='', [2]='', [3]='', [4]='', [5]='', [6]='', [7]='', [8]=''}
 
 
 local function emitSensorState(msg, sensorstate)
@@ -165,8 +165,9 @@ local function proc_bypass_msg(msg)
 		local zonenum = device.device_network_id:match('^DSC:Z(%d+)')
 		if zonenum then
 			local bypassvalue = bypass[zonenum]
-			
-			device:emit_event(cap_zonebypass.zoneBypass(BYPASSSTATE[bypassvalue]))
+			if bypassvalue then
+				device:emit_event(cap_zonebypass.zoneBypass(BYPASSSTATE[bypassvalue]))
+			end
 		end
   end
 
@@ -234,8 +235,9 @@ local function proc_partition_msg(msg)
 						display_status = msg.status
 					end
 					
-					local priorstatus = STpartitionstatus
-					STpartitionstatus = display_status
+					local priorstatus = STpartitionstatus[tonumber(msg.value)]
+					STpartitionstatus[tonumber(msg.value)] = display_status
+					log.debug(string.format('Processing Partition #%s %s (%s): priorstatus=%s', msg.value, msg.status, display_status, priorstatus))
 					
 					if (display_status == 'Ready') then
 						if priorstatus ~= 'Ready' then
@@ -332,83 +334,83 @@ local function createpanel(partnum)
 	
 	local id = 'DSC:P' .. tostring(partnum)
 	local devprofile
+	local devlabel
 	
 	if partnum == 1 then
 		devprofile = profiles['primarypanel']
+		conf.partitions[partnum] = 'DSC Primary Panel'
+		devlabel = conf.partitions[partnum]
 	else
 		devprofile = profiles['secondarypanel']
+		devlabel = string.format('DSC P%d Panel', partnum)
 	end
 		
 	local create_device_msg = {
 															type = "LAN",
 															device_network_id = id,
-															label = conf.partitions[partnum],
+															label = devlabel,
 															profile = devprofile,
 															manufacturer = MFG_NAME,
 															model = PANEL_MODEL,
 															vendor_provided_label = VEND_LABEL,
 														}
 												
-	log.info(string.format("Creating Partition #%d Panel (%s): '%s'", partnum, id, conf.partitions[partnum]))
+	log.info(string.format("Creating Partition #%d Panel (%s): '%s'", partnum, id, devlabel))
 
 	assert (evlDriver:try_create_device(create_device_msg), "failed to create panel device")
 
 end
 
 
+-- Process Settings changes for zone preferences
 local function proczonesetting(device, zonenum, oldztype, newztype, partnum)
 
-	if newztype ~= oldztype then
-	
-		log.debug (string.format('Zone %d setting change from %s to %s', zonenum, oldztype, newztype))
-	
-		local alreadyexists = false
-	
-		local device_list = evlDriver:get_devices()
+	log.debug (string.format('Zone %d setting change from %s to %s', zonenum, oldztype, newztype))
 
-		for _, device in ipairs(device_list) do
-		
-			local znum = tonumber(device.device_network_id:match('^DSC:Z(%d+)'))
-			
-			if znum == zonenum then
-				alreadyexists = true
-				break
-			end
+	local alreadyexists = false
+
+	local device_list = evlDriver:get_devices()
+
+	for _, device in ipairs(device_list) do
+	
+		if tonumber(device.device_network_id:match('^DSC:Z(%d+)')) == zonenum then
+			alreadyexists = true
+			break
 		end
+	end
 
-		if alreadyexists then
-			if newztype == 'unused' then
-				conf.zones[zonenum].name = nil
-				conf.zones[zonenum].type = nil
-				conf.zones[zonenum].partition = nil
-				log.warn (string.format('Zone %d disabled', zonenum))
-			else
-				log.error ('Cannot change device type; user delete required')
-			end
-			-- can't change type of exisiting zone to anything but 'unused'
-		
-		-- It's a new zone device	
-		elseif newztype ~= 'unused' then
-			
-			-- Create zone device
-			
-			local id = 'DSC:Z' .. tostring(zonenum)
-			local name = string.format ('Partition %d Zone %d', partnum, zonenum)
-			local devprofile = profiles[newztype]
-			local create_device_msg = {
-																	type = "LAN",
-																	device_network_id = id,
-																	label = name,
-																	profile = devprofile,
-																	manufacturer = MFG_NAME,
-																	model = 'DSC-' .. newztype,
-																	vendor_provided_label = VEND_LABEL,
-																}
-													
-			log.info(string.format("Creating Zone #%d device (%s): '%s'; type=%s", zonenum, id, name, newztype))
-
-			assert (evlDriver:try_create_device(create_device_msg), "failed to create zone device")
+	if alreadyexists then
+		if newztype == 'unused' then
+			conf.zones[zonenum].name = nil
+			conf.zones[zonenum].type = nil
+			conf.zones[zonenum].partition = nil
+			log.warn (string.format('Zone %d disabled', zonenum))
+		else
+			log.error ('Cannot change device type; user delete required')
 		end
+		-- can't change type of exisiting zone to anything but 'unused'
+	
+	-- It's a new zone device	
+	elseif newztype ~= 'unused' then
+		
+		-- Create zone device
+		
+		local id = 'DSC:Z' .. tostring(zonenum) .. '_' .. tostring(partnum)
+		local name = string.format ('Partition %d Zone %d', partnum, zonenum)
+		local devprofile = profiles[newztype]
+		local create_device_msg = {
+																type = "LAN",
+																device_network_id = id,
+																label = name,
+																profile = devprofile,
+																manufacturer = MFG_NAME,
+																model = 'DSC-' .. newztype,
+																vendor_provided_label = VEND_LABEL,
+															}
+												
+		log.info(string.format("Creating %s device (%s); type=%s", name, id, newztype))
+
+		assert (evlDriver:try_create_device(create_device_msg), "failed to create zone device")
 	end
 end 
 
