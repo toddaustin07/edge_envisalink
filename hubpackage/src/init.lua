@@ -48,7 +48,7 @@ conf = {  ['usernames']   = { [40] = 'Edge', [80] = 'MyUser2' },
                               ['port'] = 4025,
                               ['pass'] = 'user'
                             },
-          ['alarmcode']   = 1111,
+          ['alarmcode']   = '1111',
           ['partitions']  = { 'DSC Primary Panel', },
           ['zones']       = {
                               {
@@ -240,17 +240,20 @@ local function initconfig(device)
   end
   
     
-  conf.alarmcode = tonumber(device.preferences.alarmCode)
+  conf.alarmcode = device.preferences.alarmCode
+  local num_alarmcode = tonumber(device.preferences.alarmCode)
   
-  if conf.alarmcode ~= nil then
+  if num_alarmcode ~= nil then
     if string.len(device.preferences.alarmCode) ~= 4 then
       log.warn('Invalid DSC alarmcode (not 4 digits')
+    else
+      log.debug (string.format('Alarm Code <%s> validated', conf.alarmcode)) 
     end
   else
     log.warn('Invalid DSC alarmcode (not a number)')
   end
   
-  log.info (string.format('Using config prefs: %s:%d, password: %s, alarmcode: %d', conf.envisalink.ip, conf.envisalink.port, conf.envisalink.pass, conf.alarmcode))
+  log.info (string.format('Using config prefs: %s:%d, password: %s, alarmcode: %s', conf.envisalink.ip, conf.envisalink.port, conf.envisalink.pass, conf.alarmcode))
   return(addr_is_valid)
 
 end

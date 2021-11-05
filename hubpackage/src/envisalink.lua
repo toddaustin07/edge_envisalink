@@ -103,10 +103,10 @@ local function disconnect()
 	loggedin = false
 	
   if timers.reconnect then
-		driver:cancel_timer(timers.reconnect)
+		evlDriver:cancel_timer(timers.reconnect)
 	end
 	if timers.waitlogin then
-		driver:cancel_timer(timers.waitlogin)
+		evlDriver:cancel_timer(timers.waitlogin)
 	end
 	timers.reconnect = nil
 	socket.sleep(.1)
