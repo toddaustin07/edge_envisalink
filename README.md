@@ -28,14 +28,14 @@ This package does not prereq the Alarmserver package.  However if the user alrea
 ### Caveats
 - This package should be considered beta-level
 - No testing has been done yet for smoke, carbon monoxide (co), or water zones (looking for volunteers)
-- Posted code supports 1 partition only; multi-partition support coming VERY SOON
-- Supports up to 12 zones, but this is a temporary limitation for testing purposes; those with > 12 zones can still run this 
-- SmartThings Edge is still in beta as of September 2021
+- SmartThings Edge is still in beta as of November 2021
 
 ## Setup Instructions
 
 ### Install the Envisalink Edge Driver to your hub
 Use this channel invite:  https://api.smartthings.com/invitation-web/accept?id=2345136d-b4ea-4e4d-8632-7496a1fb368c
+
+Sign in to SmartThings, enroll your hub to this channel, list the available drivers, and select to install 'Envisalink 2'
 
 #### Start logging (optional)
 Use the CLI to find out the driver ID and start the logger in a window on your computer
@@ -52,11 +52,16 @@ Here you will see all messages to and from the Envisalink, as well as other driv
 Go to the SmartThings mobile app and do a Add device / Scan nearby.
 You should see activity in the logging window and a new device called ‘DSC Panel’ should be created in your Devices list in a ‘No room assigned’ room.
 Go to the device details screen of the new panel device and tap the 3 vertical dots in the upper right corner, then tap Settings.
-Warning: the Settings fields are listed in random order - a current issue with the Edge platform beta
-1. FIRST, tap on each zone you want to configure and select the appropriate type. Note that you will not be able to change this once the zone device is created. As you configure each zone, a new SmartThings device will be created and appear in your no-room-assigned room. You should also see associated activity in your log window.
-2. When you are done configuring your zones, set your 4-digit DSC Alarm Code
-3. If your Envisalink login password is the default ‘user’, you can leave that field alone, otherwise change it to whatever password you have set for your Envisalink
-4. **LASTLY**, set your Envisalink LAN Address (ip:port). Once you make this change, the driver will attempt to go out and connect to your Envisalink. Watch the log messages. If it is able to connect it will then log in with the configured Envisalink password. If for some reason it fails to connect, then it will keep retrying every 15 seconds or so.
+
+Note: the Settings fields are listed in random order - a current issue with the Edge platform beta
+
+**Warning: Because of a SmartThings platform bug in Settings, you must wait a minimum of 15 seconds between each settings change.  If you don't, your setting change may get ignored or set to something erroneous and/or your zones will not get created.**
+
+1. FIRST, if you have multiple partitions, set the Additional Partition field to the ADDITIONAL partitions you need (1 to 7). A new panel device will be created for each additional partition configured.  If you have a single partition, leave this field alone.
+2. NEXT, tap on each zone you want to configure and select the appropriate type. Note that you will not be able to change this once the zone device is created. As you configure each zone, a new SmartThings device will be created and appear in your no-room-assigned room. You should also see associated activity in your log window.
+3. When you are done configuring your zones, set your 4-digit DSC Alarm Code
+4. If your Envisalink login password is the default ‘user’, you can leave that field alone, otherwise change it to whatever password you have set for your Envisalink
+5. **LASTLY**, set your Envisalink LAN Address (ip:port). Once you make this change, the driver will attempt to go out and connect to your Envisalink. Watch the log messages. If it is able to connect it will then log in with the configured Envisalink password. If for some reason it fails to connect, then it will keep retrying every 15 seconds or so.
 Once you’ve successfully connected to the Envisalink, a refresh is issued to update the states of each of your zones.  At this point, you should be able to explore your newly created devices which should be reflecting the current DSC zone and partition status.
 
 *Note: Due to some current issues in the Edge beta, some device states may not fully initialize at startup (e.g. zone bypass state, panel arm switches), however an alarm arm/disarm sequence should resolve this.*
@@ -74,13 +79,31 @@ The zone devices have no action buttons on the dashboard view - just the status 
 
 See additional info below regarding **alarms**.
 
-### Partition Panel Device
+### Partition Panel Device(s)
 The panel device has a bit more function. The button on the *dashboard* view is used to arm or disarm the partition. Whether it performs an arm-away or arm-stay is configured on the details screen (explained below). The state shown on the dashboard is whatever the DSC is reporting such as ready, not ready, exit delay, armed-away or armed-stay, alarm, etc. 
 
 The panel device *detail* screen has a number of features. First is the partition status - same as what is shown on the dashboard. Below that is an 'Indicators' field which will show additional (led) status items such as Trouble, Memory, Bypass, and Fire. Next are discrete buttons to arm-stay or arm-away (or disarm afterwards). Then there is a button to bring up a list of additional (less-used) partition commands that can be invoked. Finally there is a toggle button to configure what happens when you tap the button on the dashboard card. It can be set to either type=arm-away or type=arm-stay, whichever you prefer. Remember you can always go to the details screen to explicitly arm either way, no matter how the dashboard button is configured.
 
 ### Alarms
 When an alarm occurs, the panel device dashboard view state will show "ALARM!!". The zone(s) that caused the alarm condition will show alarm status on the zone device *detail* screen (the zone device *dashboard* card will continue to show the current state, i.e. open, motion, smoke, etc.). When the alarm is cleared (system is disarmed), the panel state will return to normal ('Ready'), and the Indicators field on the panel details screen will show 'Memory' until the next system arm. For the zone that had caused the alarm, its device *details* screen will continue to show an alarm status until the next time the system is armed. This implements the DSC 'memory' function, giving you a way to see what zone had caused the alarm even after the alarm is cleared on the panel.
+
+## Automations
+Automations is preferred since it makes conditions and actions selection easy and straightforward.  webCoRE can also be used.
+To control the alarm system from a webCoRE piston, use setPartitionCommand with one of the following for the parameter value:
+```
+armstay
+armaway
+disarm
+panicfire
+panicamb
+panicpolice
+instantarm
+toggleinstant
+togglenight
+togglechime
+refresh
+reset
+```
 
 ## Known Issues
 
