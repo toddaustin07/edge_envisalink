@@ -86,7 +86,7 @@ The panel device *detail* screen has a number of features. First is the partitio
 When an alarm occurs, the panel device dashboard view state will show "ALARM!!". The zone(s) that caused the alarm condition will show alarm status on the zone device *detail* screen (the zone device *dashboard* card will continue to show the current state, i.e. open, motion, smoke, etc.). When the alarm is cleared (system is disarmed), the panel state will return to normal ('Ready'), and the Indicators field on the panel details screen will show 'Memory' until the next system arm. For the zone that had caused the alarm, its device *details* screen will continue to show an alarm status until the next time the system is armed. This implements the DSC 'memory' function, giving you a way to see what zone had caused the alarm even after the alarm is cleared on the panel.
 
 ## Automations
-Automations is preferred since it makes conditions and actions selection easy and straightforward.  webCoRE can also be used.
+Automations is preferred since it makes conditions and actions selection easy and straightforward, however webCoRE can also be used.
 To control the alarm system from a webCoRE piston, use setPartitionCommand with one of the following for the parameter value:
 ```
 armstay
