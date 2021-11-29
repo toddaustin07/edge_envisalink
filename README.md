@@ -53,8 +53,6 @@ Go to the SmartThings mobile app and do a Add device / Scan nearby.
 You should see activity in the logging window and a new device called ‘DSC Panel’ should be created in your Devices list in a ‘No room assigned’ room.
 Go to the device details screen of the new panel device and tap the 3 vertical dots in the upper right corner, then tap Settings.
 
-Note: the Settings fields are listed in random order - a current issue with the Edge platform beta
-
 **Warning: Because of a SmartThings platform bug in Settings, you must wait a minimum of 15 seconds between each settings change.  If you don't, your setting change may get ignored or set to something erroneous and/or your zones will not get created.**
 
 1. FIRST, if you have multiple partitions, set the Additional Partition field to the ADDITIONAL partitions you need (1 to 7). A new panel device will be created for each additional partition configured.  If you have a single partition, leave this field alone.
