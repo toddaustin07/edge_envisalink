@@ -107,7 +107,6 @@ reset
 
 ## Known Issues
 
-- The DSC Panel device Settings fields used for configuration are in random order (Edge issue)
 - The Additional Partition Commands that you can select from the panel device details screen are in random order (Edge issue)
-- Settings field changes may result in multiple duplicate notifications to the driver (Edge issue)
+- Settings field changes may result in multiple duplicate notifications to the driver (Edge issue); temporary workaround is 15 second wait between changes
 - Switches and status attributes may not get initially set correctly when devices are first created (Edge issue).  However they will eventually correct themselves as DSC updates are received, and/or an alarm/disarm cycle is completed 
