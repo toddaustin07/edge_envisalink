@@ -27,7 +27,7 @@ This package does not prereq the Alarmserver package.  However if the user alrea
 
 ### Caveats
 - This package should be considered beta-level; SmartThings Edge is still in beta as of November 2021
-- Limited testing has been done yet for smoke, carbon monoxide (co), or water zones
+- Limited testing has been done for smoke, carbon monoxide (co), and water zones
 - Incorrect SmartThings device dashboard state for smoke detectors due to known SmartThings issue
 
 ## Setup Instructions
