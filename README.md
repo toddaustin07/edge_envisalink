@@ -26,9 +26,9 @@ For viewing logging output
 This package does not prereq the Alarmserver package.  However if the user already has that running, there is a setup option where you can run both solutions in parallel.  You must be running the latest Alarmserver package from Ralph Torchia (https://github.com/rtorchia/DSC-Envisalink/tree/master/alarmserver), to ensure a functioning proxy server.  Then when configuring the Edge driver per instructions below, you can point the Edge driver to the IP address and port of the Alarmserver proxy server, which will provide a passthrough to the Envisalink.  When you are happy with everything functioning with the new Edge driver configuration, you can change its IP configuration to point directly to the Envisalink device and shutdown Alarmserver.
 
 ### Caveats
-- This package should be considered beta-level
-- No testing has been done yet for smoke, carbon monoxide (co), or water zones (looking for volunteers)
-- SmartThings Edge is still in beta as of November 2021
+- This package should be considered beta-level; SmartThings Edge is still in beta as of November 2021
+- Limited testing has been done yet for smoke, carbon monoxide (co), or water zones
+- Incorrect SmartThings device dashboard state for smoke detectors due to known SmartThings issue
 
 ## Setup Instructions
 
