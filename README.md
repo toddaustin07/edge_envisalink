@@ -53,6 +53,7 @@ You should see activity in the logging window and a new device called ‘DSC Pan
 Go to the device details screen of the new panel device and tap the 3 vertical dots in the upper right corner, then tap Settings.
 
 **Warning: Because of a SmartThings platform bug in Settings, YOU MUST WAIT a minimum of 15 seconds between each settings change.  If you don't, your setting change may get ignored or set to something erroneous and/or your zones will not get created.**
+*UPDATE: This 15 second pause requirement has been removed from the latest driver update as it appears the platform bug has been fixed.*
 
 1. FIRST, if you have multiple partitions, set the Additional Partition field to the ADDITIONAL partitions you need (1 to 7). A new panel device will be created for each additional partition configured.  If you have a single partition, leave this field alone.
 2. NEXT, tap on each zone you want to configure and select the appropriate type. Note that you will not be able to change this once the zone device is created. As you configure each zone, a new SmartThings device will be created and appear in your no-room-assigned room. You should also see associated activity in your log window.
