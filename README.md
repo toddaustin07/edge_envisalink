@@ -106,6 +106,6 @@ reset
 ## Known Issues
 
 - The Additional Partition Commands that you can select from the panel device details screen are in random order (Edge issue)
-- Settings field changes may result in multiple duplicate notifications to the driver (Edge issue); temporary workaround is 15 second wait between changes
+- Settings field changes may result in multiple duplicate notifications to the driver (Edge issue); temporary workaround is 15 second wait between changes.  *Update: this may have been fixed*
 - Switches and status attributes may not get initially set correctly when devices are first created (Edge issue).  However they will eventually correct themselves as DSC updates are received, and/or an arm/disarm cycle is completed 
 - Incorrect or no state shown in SmartThings app (dashboard) for smoke detectors (and possibly CO as well) due to known SmartThings issue
