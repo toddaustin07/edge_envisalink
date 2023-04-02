@@ -55,7 +55,7 @@ Go to the device details screen of the new panel device and tap the 3 vertical d
 1. FIRST, if you have multiple partitions, set the Additional Partition field to the ADDITIONAL partitions you need (1 to 7). A new panel device will be created for each additional partition configured.  If you have a single partition, leave this field alone.
 2. NEXT, tap on each zone you want to configure and select the appropriate type. Note that you will not be able to change this once the zone device is created. As you configure each zone, a new SmartThings device will be created and appear in your no-room-assigned room. You should also see associated activity in your log window.
 3. When you are done configuring your zones, set your 4-6 digit DSC Alarm Code
-4. If your Envisalink login password is the default ‘user’, you can leave that field alone, otherwise change it to whatever password you have set for your Envisalink
+4. If your Envisalink login password is the default ‘user’, you can leave that field alone, otherwise change it to whatever password you have set for your Envisalink.  Note that this password is *not* your EyesOn web application password.
 5. **LASTLY**, set your Envisalink LAN Address (ip:port). Once you make this change, the driver will attempt to go out and connect to your Envisalink. Watch the log messages. If it is able to connect it will then log in with the configured Envisalink password. If for some reason it fails to connect, then it will keep retrying every 15 seconds or so.
 Once you’ve successfully connected to the Envisalink, a refresh is issued to update the states of each of your zones.  At this point, you should be able to explore your newly created devices which should be reflecting the current DSC zone and partition status.
 
