@@ -4,7 +4,7 @@ This Edge driver is targeted to users having a DSC security system with an Envis
 
 The typical (but not exclusive) audiance has an existing solution using the 'Alarmserver' package. Alarmserver is a Python-based program that runs on a LAN-connected computer (often a Raspberry Pi) and connects to an Envisalink module to pass messages back and forth to SmartThings.  However Alarmserver is based on the legacy DTH / SmartApp / graph callback implementation which will be sunset by SmartThings.  This driver provides a migration path for those Alarmserver users and offers a number of additional benefits as outlined below.
 
-PLEASE NOTE:  This driver only works with DSC systems.  Those with Honeywell or Honeywell-compatable systems should check out an applicable driver [here](https://community.smartthings.com/t/st-edge-honeywell-ademco-vista-panel-envisalink/233766).
+*PLEASE NOTE:  This driver only works with DSC systems.  Those with Honeywell or Honeywell-compatable systems should check out an applicable driver [here](https://community.smartthings.com/t/st-edge-honeywell-ademco-vista-panel-envisalink/233766).*
 
 ### Benefits
 - Eliminates dependency on Groovy DTHs, which is being sunset
@@ -16,6 +16,7 @@ PLEASE NOTE:  This driver only works with DSC systems.  Those with Honeywell or 
 
 ### Pre-requisites
 - SmartThings hub V2 or later
+- DSC security system
 - Connected and running Envisalink interface; know its IP address and port #
 
 ### Optional
@@ -26,15 +27,14 @@ For viewing logging output
 This package does not prereq the Alarmserver package.  However if the user already has that running, there is a setup option where you can run both solutions in parallel.  You must be running the latest Alarmserver package from Ralph Torchia (https://github.com/rtorchia/DSC-Envisalink/tree/master/alarmserver), to ensure a functioning proxy server.  Then when configuring the Edge driver per instructions below, you can point the Edge driver to the IP address and port of the Alarmserver proxy server, which will provide a passthrough to the Envisalink.  When you are happy with everything functioning with the new Edge driver configuration, you can change its IP configuration to point directly to the Envisalink device and shutdown Alarmserver.
 
 ### Caveats
-- This package should be considered beta-level; SmartThings Edge is still in beta as of November 2021
 - Limited testing has been done for smoke, carbon monoxide (co), and water zones
 
 ## Setup Instructions
 
 ### Install the Envisalink Edge Driver to your hub
-Use this channel invite:  https://api.smartthings.com/invitation-web/accept?id=2345136d-b4ea-4e4d-8632-7496a1fb368c
+Use this [channel invite](https://bestow-regional.api.smartthings.com/invite/d429RZv8m9lo).
 
-Sign in to SmartThings, enroll your hub to this channel, list the available drivers, and select to install 'Envisalink 2'
+Sign in to SmartThings, enroll your hub to the channel, list the available drivers, and select to install 'Envisalink 2.1'
 
 #### Start logging (optional)
 Use the CLI to find out the driver ID and start the logger in a window on your computer
@@ -48,12 +48,9 @@ Here you will see all messages to and from the Envisalink, as well as other driv
   
 ### Initialize and Configure the Driver
 
-Go to the SmartThings mobile app and do a Add device / Scan nearby.
-You should see activity in the logging window and a new device called ‘DSC Panel’ should be created in your Devices list in a ‘No room assigned’ room.
+Go to the SmartThings mobile app and do a Add device / Scan for nearby devices.
+You should see activity in the logging window and a new device called ‘DSC Panel’ should be created in the SmartThings room where your hub device is located.
 Go to the device details screen of the new panel device and tap the 3 vertical dots in the upper right corner, then tap Settings.
-
-**Warning: Because of a SmartThings platform bug in Settings, YOU MUST WAIT a minimum of 15 seconds between each settings change.  If you don't, your setting change may get ignored or set to something erroneous and/or your zones will not get created.**
-*UPDATE: This 15 second pause requirement has been removed from the latest driver update as it appears the platform bug has been fixed.*
 
 1. FIRST, if you have multiple partitions, set the Additional Partition field to the ADDITIONAL partitions you need (1 to 7). A new panel device will be created for each additional partition configured.  If you have a single partition, leave this field alone.
 2. NEXT, tap on each zone you want to configure and select the appropriate type. Note that you will not be able to change this once the zone device is created. As you configure each zone, a new SmartThings device will be created and appear in your no-room-assigned room. You should also see associated activity in your log window.
@@ -62,7 +59,7 @@ Go to the device details screen of the new panel device and tap the 3 vertical d
 5. **LASTLY**, set your Envisalink LAN Address (ip:port). Once you make this change, the driver will attempt to go out and connect to your Envisalink. Watch the log messages. If it is able to connect it will then log in with the configured Envisalink password. If for some reason it fails to connect, then it will keep retrying every 15 seconds or so.
 Once you’ve successfully connected to the Envisalink, a refresh is issued to update the states of each of your zones.  At this point, you should be able to explore your newly created devices which should be reflecting the current DSC zone and partition status.
 
-*Note: Due to some current issues in the Edge beta, some device states may not fully initialize at startup (e.g. zone bypass state, panel arm switches), however an alarm arm/disarm sequence should resolve this.*
+*Note: Some device states may not fully initialize at startup (e.g. zone bypass state, panel arm switches), however an alarm arm/disarm sequence should resolve this.*
 
 
 ### Updating the Driver
@@ -106,6 +103,5 @@ reset
 ## Known Issues
 
 - The Additional Partition Commands that you can select from the panel device details screen are in random order (Edge issue)
-- Settings field changes may result in multiple duplicate notifications to the driver (Edge issue); temporary workaround is 15 second wait between changes.  *Update: this may have been fixed*
 - Switches and status attributes may not get initially set correctly when devices are first created (Edge issue).  However they will eventually correct themselves as DSC updates are received, and/or an arm/disarm cycle is completed 
 - Incorrect or no state shown in SmartThings app (dashboard) for smoke detectors (and possibly CO as well) due to known SmartThings issue
