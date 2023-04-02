@@ -4,7 +4,7 @@ This Edge driver is targeted to users having a DSC security system with an Envis
 
 The typical (but not exclusive) audiance has an existing solution using the 'Alarmserver' package. Alarmserver is a Python-based program that runs on a LAN-connected computer (often a Raspberry Pi) and connects to an Envisalink module to pass messages back and forth to SmartThings.  However Alarmserver is based on the legacy DTH / SmartApp / graph callback implementation which will be sunset by SmartThings.  This driver provides a migration path for those Alarmserver users and offers a number of additional benefits as outlined below.
 
-PLEASE NOTE:  This driver only works with DSC systems.  Those with Honeywell or Honeywell-compatiable systems should check out an applicable driver [here](https://community.smartthings.com/t/st-edge-honeywell-ademco-vista-panel-envisalink/233766).
+PLEASE NOTE:  This driver only works with DSC systems.  Those with Honeywell or Honeywell-compatable systems should check out an applicable driver [here](https://community.smartthings.com/t/st-edge-honeywell-ademco-vista-panel-envisalink/233766).
 
 ### Benefits
 - Eliminates dependency on Groovy DTHs, which is being sunset
