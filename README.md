@@ -7,7 +7,7 @@ The typical (but not exclusive) audiance has an existing solution using the 'Ala
 *PLEASE NOTE:  This driver only works with DSC systems.  Those with Honeywell or Honeywell-compatable systems should check out an applicable driver [here](https://community.smartthings.com/t/st-edge-honeywell-ademco-vista-panel-envisalink/233766).*
 
 ### Benefits
-- Eliminates dependency on Groovy DTHs, which is being sunset
+- Eliminates dependency on Groovy DTHs, which has being sunset
 - No SmartApp is required
 - Eliminates need for separate stay / away panel devices
 - Eliminates need for separate computer to run Envisalink interfacing code
