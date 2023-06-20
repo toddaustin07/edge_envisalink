@@ -22,7 +22,7 @@ Some may already have an existing solution using the 'Alarmserver' package. Alar
 
 ### Pre-requisites
 - SmartThings hub V2 or later
-- **DSC*** security system
+- **DSC** security system
 - Connected and running Envisalink interface (know its IP address and port number)
 
 ### Migrating from Alarmserver
