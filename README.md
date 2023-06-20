@@ -85,7 +85,7 @@ This will show additional (panel LED) status items such as Trouble, Memory, Bypa
 #### Trouble type
 When the partition is in a Trouble state, this field will display the specific trouble being reported by the system, such as Battery, Bell, AC Power Loss, etc.
 
-*Special info regarding AC Power Loss:  some DSC systems may be configured to use a 30 minute delay before an 'AC Power Loss' trouble type is reported.  In the meantime a 'Service Required' trouble type may be displayed.  To have an AC Power Loss reported immediately, the user will have to program section 377 Communication Variables of the DSC system, and setting 'AC Failure Communication Delay', which defaults to 30 minutes.*
+*Special info regarding AC Power Loss detection:  DSC systems have by default a 30 minute delay before an 'AC Power Loss' trouble type is reported.  In the meantime a generic 'Service Required' trouble type may be displayed.  To have an AC Power Loss reported immediately, the user will have to program section 377 Communication Variables of the DSC system, and setting 'AC Failure Communication Delay' to 0*
 
 #### Arm Stay, Arm Away
 These buttons are provided to arm your the partition (or disarm afterwards) for either away or stay mode. 
