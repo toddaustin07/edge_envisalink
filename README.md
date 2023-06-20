@@ -43,10 +43,10 @@ Go to the device Controls screen of the new panel device and tap the 3 vertical 
 
 1. FIRST, if you have multiple partitions, set the Additional Partition field to the ADDITIONAL number of partitions you need (1 to 7 more). A new panel device will be created for each additional partition configured.  If you have a single partition, leave this field alone.
 2. NEXT, tap on each zone you want to configure and select the appropriate type. Note that you will not be able to change this once the zone device is created, so proceed carefully. As you define each zone, a new SmartThings device will be created.
-3. When you are done configuring your zones, set your 4-6 digit DSC Alarm Code.  This code will be used by the driver whenever you arm/disarm the system through SmartThings.  Be sure it is one that has been configured in your DSC system; it can be the 'master' code, or any of the user codes (01-32)
+3. When you are done configuring your zones, set your 4-6 digit DSC Alarm Code.  This code will be used by the driver whenever you arm/disarm the system through SmartThings.  Be sure it is one that has been configured in your DSC system; it can be the system master code, or any of the additional user codes.
 4. If your Envisalink login password is the default ‘user’, you can leave that field alone, otherwise change it to whatever password you have set for your Envisalink.  Note that this password is *not* your EyesOn web application password.
 5. Other Settings options are available, which can be configured later and are described later in this document.
-6. **LASTLY**, set your Envisalink LAN Address (ip:port). Once you make this change, the driver will attempt to go out and connect to your Envisalink. Watch the log messages. If it is able to connect it will then log in with the configured Envisalink password. If for some reason it fails to connect, then it will keep retrying every 15 seconds or so.
+6. **LASTLY**, set your Envisalink LAN Address (ip:port). Once you make this change, the driver will attempt to go out and connect to your Envisalink. If it is able to connect it will then log in with the configured Envisalink password. If for some reason it fails to connect, then it will keep retrying every 15 seconds or so.
 Once you’ve successfully connected to the Envisalink, a refresh is issued to update the states of each of your zones and panel(s).  At this point, you should be able to explore your newly created devices which should be reflecting the current DSC zone and partition status.
 
 ### Updating the Driver
@@ -62,9 +62,9 @@ The zone devices have no action buttons on the dashboard view - just the status 
 See additional info below regarding **alarms**.
 
 ### Partition Panel Device(s)
-The panel device has a bit more function. The button on the *dashboard* view is used to arm or disarm the partition. Whether it performs an arm-away or arm-stay is configured on the details screen (explained below). The state shown on the dashboard is whatever the DSC is reporting such as ready, not ready, exit delay, armed-away or armed-stay, alarm, etc. 
+The panel device has a bit more function. The button on the *dashboard* view is used to arm or disarm the partition. Whether it performs an arm-away or arm-stay is configured on the Controls screen (explained below). The state shown on the dashboard is whatever the DSC partition is reporting such as Ready, Not ready, Exit delay, Armed-away or Armed-stay, Alarm, Offline, etc. 
 
-The panel device Controls screen has a number of fields:
+The panel device *Controls* screen has a number of fields:
 
 #### Partition status
 This is same value as what is shown on the dashboard, which reflects the overall state of the partition. 
