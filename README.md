@@ -33,7 +33,7 @@ This package does not prereq the Alarmserver package.  However if the user alrea
 ### Install the Envisalink Edge Driver to your hub
 Use this [channel invite](https://bestow-regional.api.smartthings.com/invite/d429RZv8m9lo).
 
-Sign in to SmartThings, enroll your hub to the channel, list the available drivers, and select to install '**Envisalink 3.0**'
+Sign in to SmartThings, enroll your hub to the channel, list the available drivers, and select to install '**Envisalink 3.0**'.
   
 ### Initialize and Configure the Driver
 
