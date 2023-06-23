@@ -1,0 +1,91 @@
+{
+    "dashboard": {
+        "states": [
+            {
+                "label": "{{awaySwitch.value}}"
+            }
+        ],
+        "actions": []
+    },
+    "detailView": [
+        {
+            "label": "{{i18n.label}}",
+            "displayType": "toggleSwitch",
+            "toggleSwitch": {
+                "command": {
+                    "on": "switchOn",
+                    "off": "switchOff"
+                },
+                "state": {
+                    "value": "awaySwitch.value",
+                    "valueType": "string",
+                    "on": "On",
+                    "off": "Off",
+                    "label": "{{awaySwitch.value}}",
+                    "alternatives": [
+                        {
+                            "key": "On",
+                            "value": "On",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Off",
+                            "value": "Off",
+                            "type": "inactive"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "label": "Arm Away",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "On",
+                            "value": "Arm Away On (Armed)",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Off",
+                            "value": "Arm Away Off (Disarmed)",
+                            "type": "inactive"
+                        }
+                    ],
+                    "value": "awaySwitch.value",
+                    "valueType": "string"
+                },
+                "emphasis": true
+            }
+        ],
+        "actions": [
+            {
+                "label": "Arm Away",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "On",
+                            "value": "Arm Away",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Off",
+                            "value": "Disarm Away",
+                            "type": "inactive"
+                        }
+                    ],
+                    "command": "setSwitch",
+                    "argumentType": "string"
+                },
+                "emphasis": true
+            }
+        ]
+    },
+    "id": "partyvoice23922.dscawayswitch3",
+    "version": 1
+}

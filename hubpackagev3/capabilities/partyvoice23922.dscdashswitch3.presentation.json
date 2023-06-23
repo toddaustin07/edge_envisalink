@@ -1,0 +1,28 @@
+{
+    "dashboard": {
+        "states": [],
+        "actions": [
+            {
+                "displayType": "toggleSwitch",
+                "toggleSwitch": {
+                    "command": {
+                        "on": "switchOn",
+                        "off": "switchOff"
+                    },
+                    "state": {
+                        "value": "dashSwitch.value",
+                        "on": "On",
+                        "off": "Off",
+                        "valueType": "string"
+                    }
+                }
+            }
+        ]
+    },
+    "automation": {
+        "conditions": [],
+        "actions": []
+    },
+    "id": "partyvoice23922.dscdashswitch3",
+    "version": 1
+}

@@ -1,0 +1,51 @@
+{
+    "dashboard": {
+        "states": [
+            {
+                "label": "{{troubleType.value}}"
+            }
+        ],
+        "actions": []
+    },
+    "detailView": [
+        {
+            "label": "{{i18n.label}}",
+            "displayType": "state",
+            "state": {
+                "label": "{{troubleType.value}}"
+            }
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "label": "Trouble type",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "battery",
+                            "value": "Battery",
+                            "type": "active"
+                        },
+                        {
+                            "key": "AC",
+                            "value": "AC",
+                            "type": "active"
+                        },
+                        {
+                            "key": "bell",
+                            "value": "Bell",
+                            "type": "active"
+                        }
+                    ],
+                    "value": "troubleType.value",
+                    "valueType": "string"
+                }
+            }
+        ],
+        "actions": []
+    },
+    "id": "partyvoice23922.dsctroubletype",
+    "version": 1
+}

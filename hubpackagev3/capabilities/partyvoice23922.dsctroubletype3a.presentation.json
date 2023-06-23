@@ -1,0 +1,86 @@
+{
+    "dashboard": {
+        "states": [
+            {
+                "label": "{{troubleType.value}}"
+            }
+        ],
+        "actions": []
+    },
+    "detailView": [
+        {
+            "label": "{{i18n.label}}",
+            "displayType": "state",
+            "state": {
+                "label": "{{troubleType.value}}"
+            }
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "label": "Trouble type",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "AC Power Lost",
+                            "value": "AC Power Lost",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Battery",
+                            "value": "Battery",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Bell",
+                            "value": "Bell",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Failure to Communicate",
+                            "value": "Failure to Communicate",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Loss of Time",
+                            "value": "Loss of Time",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Service Required",
+                            "value": "Service Required",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Sensor/Zone Fault",
+                            "value": "Sensor/Zone Fault",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Sensor/Zone Tamper",
+                            "value": "Sensor/Zone Tamper",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Sensor/Zone Battery",
+                            "value": "Sensor/Zone Battery",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Telephone Line Fault",
+                            "value": "Telephone Line Fault",
+                            "type": "active"
+                        }
+                    ],
+                    "value": "troubleType.value",
+                    "valueType": "string"
+                }
+            }
+        ],
+        "actions": []
+    },
+    "id": "partyvoice23922.dsctroubletype3a",
+    "version": 1
+}

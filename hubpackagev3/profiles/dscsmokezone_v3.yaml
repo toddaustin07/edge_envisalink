@@ -1,0 +1,17 @@
+name: DSC.smokezone.v3
+components:
+- id: main
+  label: "Smoke Detector Zone"
+  capabilities:
+    - id: smokeDetector
+      version: 1
+    - id: partyvoice23922.smokestatus
+      version: 1
+    - id: partyvoice23922.zonebypass3a
+      version: 1
+  categories:
+    - name: SmokeDetector
+metadata:
+  vid: 3e701cca-d10d-33fc-815d-907f82287afe
+  mnmn: fE4b
+

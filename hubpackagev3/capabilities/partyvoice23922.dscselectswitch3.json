@@ -1,0 +1,41 @@
+{
+    "id": "partyvoice23922.dscselectswitch3",
+    "version": 1,
+    "status": "proposed",
+    "name": "dscselectswitch3",
+    "ephemeral": false,
+    "attributes": {
+        "selection": {
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string",
+                        "maxLength": 20
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "value"
+                ]
+            },
+            "setter": "setSelection",
+            "enumCommands": []
+        }
+    },
+    "commands": {
+        "setSelection": {
+            "name": "setSelection",
+            "arguments": [
+                {
+                    "name": "value",
+                    "optional": false,
+                    "schema": {
+                        "type": "string",
+                        "maxLength": 20
+                    }
+                }
+            ]
+        }
+    }
+}

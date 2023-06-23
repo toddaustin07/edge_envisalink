@@ -1,0 +1,5 @@
+name: 'Envisalink 3.0'
+packageKey: 'envisalinkv3.0'
+permissions:
+    lan: {}
+    discovery: {}

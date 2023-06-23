@@ -1,0 +1,62 @@
+{
+    "dashboard": {
+        "states": [],
+        "actions": []
+    },
+    "detailView": [
+        {
+            "label": "{{i18n.label}}",
+            "displayType": "list",
+            "list": {
+                "command": {
+                    "name": "setSelection",
+                    "alternatives": [
+                        {
+                            "key": "away",
+                            "value": "Arm Away",
+                            "type": "active"
+                        },
+                        {
+                            "key": "stay",
+                            "value": "Arm Stay",
+                            "type": "active"
+                        },
+                        {
+                            "key": "none",
+                            "value": "No action",
+                            "type": "active"
+                        }
+                    ],
+                    "argumentType": "string"
+                },
+                "state": {
+                    "value": "selection.value",
+                    "valueType": "string",
+                    "alternatives": [
+                        {
+                            "key": "away",
+                            "value": "Arm Away",
+                            "type": "active"
+                        },
+                        {
+                            "key": "stay",
+                            "value": "Arm Stay",
+                            "type": "active"
+                        },
+                        {
+                            "key": "none",
+                            "value": "No action",
+                            "type": "active"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "automation": {
+        "conditions": [],
+        "actions": []
+    },
+    "id": "partyvoice23922.dscselectswitch3",
+    "version": 1
+}

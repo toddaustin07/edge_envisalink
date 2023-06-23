@@ -1,0 +1,91 @@
+{
+    "dashboard": {
+        "states": [
+            {
+                "label": "{{staySwitch.value}}"
+            }
+        ],
+        "actions": []
+    },
+    "detailView": [
+        {
+            "label": "{{i18n.label}}",
+            "displayType": "toggleSwitch",
+            "toggleSwitch": {
+                "command": {
+                    "on": "switchOn",
+                    "off": "switchOff"
+                },
+                "state": {
+                    "value": "staySwitch.value",
+                    "valueType": "string",
+                    "on": "On",
+                    "off": "Off",
+                    "label": "{{staySwitch.value}}",
+                    "alternatives": [
+                        {
+                            "key": "On",
+                            "value": "On",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Off",
+                            "value": "Off",
+                            "type": "inactive"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "label": "Arm Stay",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "On",
+                            "value": "Arm Stay On (Armed)",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Off",
+                            "value": "Arm Stay Off (Disarmed)",
+                            "type": "inactive"
+                        }
+                    ],
+                    "value": "staySwitch.value",
+                    "valueType": "string"
+                },
+                "emphasis": true
+            }
+        ],
+        "actions": [
+            {
+                "label": "Arm Stay",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "On",
+                            "value": "Arm Stay",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Off",
+                            "value": "Disarm Stay",
+                            "type": "inactive"
+                        }
+                    ],
+                    "command": "setSwitch",
+                    "argumentType": "string"
+                },
+                "emphasis": true
+            }
+        ]
+    },
+    "id": "partyvoice23922.dscstayswitch3",
+    "version": 1
+}

@@ -1,0 +1,63 @@
+{
+    "id": "partyvoice23922.dscstayswitch3",
+    "version": 1,
+    "status": "proposed",
+    "name": "dscstayswitch3",
+    "ephemeral": false,
+    "attributes": {
+        "staySwitch": {
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string",
+                        "enum": [
+                            "On",
+                            "Off"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "value"
+                ]
+            },
+            "enumCommands": [
+                {
+                    "command": "switchOn",
+                    "value": "On"
+                },
+                {
+                    "command": "switchOff",
+                    "value": "Off"
+                }
+            ]
+        }
+    },
+    "commands": {
+        "switchOff": {
+            "name": "switchOff",
+            "arguments": []
+        },
+        "switchOn": {
+            "name": "switchOn",
+            "arguments": []
+        },
+        "setSwitch": {
+            "name": "setSwitch",
+            "arguments": [
+                {
+                    "name": "state",
+                    "optional": false,
+                    "schema": {
+                        "type": "string",
+                        "enum": [
+                            "On",
+                            "Off"
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}

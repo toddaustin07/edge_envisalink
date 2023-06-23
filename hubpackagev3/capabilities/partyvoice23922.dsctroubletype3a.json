@@ -1,0 +1,25 @@
+{
+    "id": "partyvoice23922.dsctroubletype3a",
+    "version": 1,
+    "status": "proposed",
+    "name": "dsctroubletype3a",
+    "ephemeral": false,
+    "attributes": {
+        "troubleType": {
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "value"
+                ]
+            },
+            "enumCommands": []
+        }
+    },
+    "commands": {}
+}

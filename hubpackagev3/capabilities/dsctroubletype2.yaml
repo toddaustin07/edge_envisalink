@@ -1,0 +1,17 @@
+id: partyvoice23922.dsctroubletype2
+version: 1
+status: proposed
+name: dsctroubletype2
+ephemeral: false
+attributes:
+  troubleType:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+      additionalProperties: false
+      required:
+        - value
+    enumCommands: []
+commands: {}

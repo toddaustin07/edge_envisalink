@@ -1,0 +1,30 @@
+id: partyvoice23922.dscdashswitch3
+version: 1
+status: proposed
+name: dscdashswitch3
+ephemeral: false
+attributes:
+  dashSwitch:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+          enum:
+            - 'On'
+            - 'Off'
+      additionalProperties: false
+      required:
+        - value
+    enumCommands:
+      - command: switchOn
+        value: 'On'
+      - command: switchOff
+        value: 'Off'
+commands:
+  switchOff:
+    name: switchOff
+    arguments: []
+  switchOn:
+    name: switchOn
+    arguments: []

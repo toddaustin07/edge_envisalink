@@ -1,0 +1,17 @@
+name: DSC.waterzone.v3
+components:
+- id: main
+  label: "Moisture Sensor Zone"
+  capabilities:
+    - id: waterSensor
+      version: 1
+    - id: partyvoice23922.waterstatus
+      version: 1
+    - id: partyvoice23922.zonebypass3a
+      version: 1
+  categories:
+    - name: LeakSensor
+metadata:
+  vid: d6441e30-a323-3797-88bf-26c2bf7f687f
+  mnmn: fE4b
+

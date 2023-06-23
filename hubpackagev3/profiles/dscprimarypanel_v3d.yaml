@@ -1,0 +1,1016 @@
+name: DSC.primarypanel.v3d
+components:
+- id: main
+  label: "Primary Partition"
+  capabilities:
+    - id: "partyvoice23922.partitionstatus3a"
+      version: 1
+    - id: "partyvoice23922.dscdashswitch3"
+      version: 1
+    - id: "partyvoice23922.ledstatus2"
+      version: 1
+    - id: "partyvoice23922.dscuser"
+      version: 1
+    - id: "partyvoice23922.dsctroubletype3a"
+      version: 1
+    - id: "partyvoice23922.dscstayswitch3"
+      version: 1
+    - id: "partyvoice23922.dscawayswitch3"
+      version: 1
+    - id: "partyvoice23922.partitioncommand3"
+      version: 1
+    - id: "partyvoice23922.dscselectswitch3"
+      version: 1
+    - id: alarm
+      version: 1
+    - id: securitySystem
+      version: 1
+  categories:
+    - name: SecurityPanel
+metadata:
+  vid: f1608f6c-d997-30cb-a9e9-03bf77fb8dff
+  mnmn: fE4b
+preferences:
+  - title: "Set arm mode from STHM"
+    name: sthmsynch
+    description: "Select behavior"
+    required: true
+    preferenceType: enumeration
+    definition:
+      options:
+        yessynch: "Auto-synch"
+        nosynch: "No auto-synch"
+      default: nosynch
+  - title: "Aux Siren Trigger"
+    name: sirenpgm
+    description: "Select PGM"
+    required: true
+    preferenceType: enumeration
+    definition:
+      options:
+        pgm0: "none"
+        pgm1: "Trigger: PGM1"
+        pgm2: "Trigger: PGM2"
+        pgm3: "Trigger: PGM3"
+        pgm4: "Trigger: PGM4"
+      default: pgm0
+  - title: "Aux Siren Duration"
+    name: sirenduration
+    description: "Number of seconds"
+    required: false
+    preferenceType: integer
+    definition:
+      minimum: 1
+      maximum: 255
+      default: 60
+  - title: "Additional Partitions"
+    name: addlparts
+    description: "Number of ADDITIONAL partitions"
+    required: false
+    preferenceType: integer
+    definition:
+      minimum: 0
+      maximum: 7
+      default: 0
+  - title: "Envisalink login password"
+    name: envPass
+    description: "min 4-char alphanumeric password"
+    required: true
+    preferenceType: string
+    definition:
+      stringType: password
+      minLength: 4
+      maxLength: 10
+      default: "user"
+  - title: "Access Code for Arm/Disarm"
+    name: alarmCode
+    description: "4-6 digit code"
+    required: true
+    preferenceType: string
+    definition:
+      stringType: password
+      minLength: 4
+      maxLength: 6
+      default: "1111"
+  - title: "Access Code->Name Map"
+    name: usermap
+    descripion: "nn=xxxx, nn=xxxx, ..."
+    required: false
+    preferenceType: string
+    definition:
+      stringType: text
+      default: "40=Master, 01=Myname"
+  - title: "Periodic Connection Check"
+    name: checkfreq
+    description: "Poll frequency in minutes"
+    required: true
+    preferenceType: integer
+    definition:
+      minimum: 5
+      default: 15
+  - title: "Envisalink LAN Address"
+    name: lanAddress
+    description: "IP:port address of Envisalink"
+    required: true
+    preferenceType: string
+    definition:
+      stringType: text
+      minLength: 12
+      maxLength: 20
+      default: '192.168.1.nnn:4025'
+  - title: "Zone 1"
+    name: zone1
+    description: "Zone 1 Type"
+    required: true
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 2"
+    name: zone2
+    description: "Zone 2 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 3"
+    name: zone3
+    description: "Zone 3 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 4"
+    name: zone4
+    description: "Zone 4 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 5"
+    name: zone5
+    description: "Zone 5 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 6"
+    name: zone6
+    description: "Zone 6 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 7"
+    name: zone7
+    description: "Zone 7 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 8"
+    name: zone8
+    description: "Zone 8 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 9"
+    name: zone9
+    description: "Zone 9 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 10"
+    name: zone10
+    description: "Zone 10 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 11"
+    name: zone11
+    description: "Zone 11 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 12"
+    name: zone12
+    description: "Zone 12 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 13"
+    name: zone13
+    description: "Zone 13 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 14"
+    name: zone14
+    description: "Zone 14 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 15"
+    name: zone15
+    description: "Zone 15 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 16"
+    name: zone16
+    description: "Zone 16 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 17"
+    name: zone17
+    description: "Zone 17 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 18"
+    name: zone18
+    description: "Zone 18 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 19"
+    name: zone19
+    description: "Zone 19 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 20"
+    name: zone20
+    description: "Zone 20 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 21"
+    name: zone21
+    description: "Zone 21 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 22"
+    name: zone22
+    description: "Zone 22 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 23"
+    name: zone23
+    description: "Zone 23 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 24"
+    name: zone24
+    description: "Zone 24 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 25"
+    name: zone25
+    description: "Zone 25 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 26"
+    name: zone26
+    description: "Zone 26 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 27"
+    name: zone27
+    description: "Zone 27 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 28"
+    name: zone28
+    description: "Zone 28 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 29"
+    name: zone29
+    description: "Zone 29 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 30"
+    name: zone30
+    description: "Zone 30 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 31"
+    name: zone31
+    description: "Zone 31 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 32"
+    name: zone32
+    description: "Zone 32 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 33"
+    name: zone33
+    description: "Zone 33 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 34"
+    name: zone34
+    description: "Zone 34 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 35"
+    name: zone35
+    description: "Zone 35 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 36"
+    name: zone36
+    description: "Zone 36 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 37"
+    name: zone37
+    description: "Zone 37 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 38"
+    name: zone38
+    description: "Zone 38 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 39"
+    name: zone39
+    description: "Zone 39 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 40"
+    name: zone40
+    description: "Zone 40 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 41"
+    name: zone41
+    description: "Zone 41 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 42"
+    name: zone42
+    description: "Zone 42 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 43"
+    name: zone43
+    description: "Zone 43 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 44"
+    name: zone44
+    description: "Zone 44 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 45"
+    name: zone45
+    description: "Zone 45 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 46"
+    name: zone46
+    description: "Zone 46 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 47"
+    name: zone47
+    description: "Zone 47 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 48"
+    name: zone48
+    description: "Zone 48 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 49"
+    name: zone49
+    description: "Zone 49 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 50"
+    name: zone50
+    description: "Zone 50 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 51"
+    name: zone51
+    description: "Zone 51 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 52"
+    name: zone52
+    description: "Zone 52 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 53"
+    name: zone53
+    description: "Zone 53 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 54"
+    name: zone54
+    description: "Zone 54 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 55"
+    name: zone55
+    description: "Zone 55 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 56"
+    name: zone56
+    description: "Zone 56 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 57"
+    name: zone57
+    description: "Zone 57 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 58"
+    name: zone58
+    description: "Zone 58 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 59"
+    name: zone59
+    description: "Zone 59 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 60"
+    name: zone60
+    description: "Zone 60 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 61"
+    name: zone61
+    description: "Zone 61 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 62"
+    name: zone62
+    description: "Zone 62 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 63"
+    name: zone63
+    description: "Zone 63 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused
+  - title: "Zone 64"
+    name: zone64
+    description: "Zone 64 Type"
+    required: false
+    preferenceType: enumeration
+    definition:
+      options:
+        contact: "contact sensor"
+        motion: "motion detector"
+        smoke: "smoke detector"
+        co: "carbon monoxide detector"
+        water: "moisture detector"
+        unused: "unused"
+      default: unused

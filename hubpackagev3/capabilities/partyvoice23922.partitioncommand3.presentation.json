@@ -1,0 +1,283 @@
+{
+    "dashboard": {
+        "states": [],
+        "actions": []
+    },
+    "detailView": [
+        {
+            "label": "{{i18n.label}}",
+            "displayType": "list",
+            "list": {
+                "command": {
+                    "name": "setPartitionCommand",
+                    "alternatives": [
+                        {
+                            "key": "panicfire",
+                            "value": "Panic Fire",
+                            "type": "active"
+                        },
+                        {
+                            "key": "panicamb",
+                            "value": "Panic Ambulance",
+                            "type": "active"
+                        },
+                        {
+                            "key": "panicpolice",
+                            "value": "Panic Police",
+                            "type": "active"
+                        },
+                        {
+                            "key": "instantstay",
+                            "value": "Arm-Stay Instant",
+                            "type": "active"
+                        },
+                        {
+                            "key": "instantaway",
+                            "value": "Arm-Away Instant",
+                            "type": "active"
+                        },
+                        {
+                            "key": "togglenight",
+                            "value": "Toggle Night Mode",
+                            "type": "active"
+                        },
+                        {
+                            "key": "togglechime",
+                            "value": "Toggle Chime",
+                            "type": "active"
+                        },
+                        {
+                            "key": "refresh",
+                            "value": "Refresh",
+                            "type": "active"
+                        },
+                        {
+                            "key": "reset",
+                            "value": "Reset",
+                            "type": "active"
+                        },
+                        {
+                            "key": "armstay",
+                            "value": "Arm Stay",
+                            "type": "active"
+                        },
+                        {
+                            "key": "armaway",
+                            "value": "Arm Away",
+                            "type": "active"
+                        },
+                        {
+                            "key": "disarm",
+                            "value": "Disarm",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm1",
+                            "value": "PGM1",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm2",
+                            "value": "PGM2",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm3",
+                            "value": "PGM3",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm4",
+                            "value": "PGM4",
+                            "type": "active"
+                        }
+                    ],
+                    "argumentType": "string"
+                },
+                "state": {
+                    "value": "partitionCommand.value",
+                    "valueType": "string",
+                    "alternatives": [
+                        {
+                            "key": "panicfire",
+                            "value": "Panic Fire",
+                            "type": "active"
+                        },
+                        {
+                            "key": "panicamb",
+                            "value": "Panic Ambulance",
+                            "type": "active"
+                        },
+                        {
+                            "key": "panicpolice",
+                            "value": "Panic Police",
+                            "type": "active"
+                        },
+                        {
+                            "key": "instantstay",
+                            "value": "Arm-Stay Instant",
+                            "type": "active"
+                        },
+                        {
+                            "key": "instantaway",
+                            "value": "Arm-Away Instant",
+                            "type": "active"
+                        },
+                        {
+                            "key": "togglenight",
+                            "value": "Toggle Night Mode",
+                            "type": "active"
+                        },
+                        {
+                            "key": "togglechime",
+                            "value": "Toggle Chime",
+                            "type": "active"
+                        },
+                        {
+                            "key": "refresh",
+                            "value": "Refresh",
+                            "type": "active"
+                        },
+                        {
+                            "key": "reset",
+                            "value": "Reset",
+                            "type": "active"
+                        },
+                        {
+                            "key": "armstay",
+                            "value": "Arm Stay",
+                            "type": "active"
+                        },
+                        {
+                            "key": "armaway",
+                            "value": "Arm Away",
+                            "type": "active"
+                        },
+                        {
+                            "key": "disarm",
+                            "value": "Disarm",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm1",
+                            "value": "PGM1",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm2",
+                            "value": "PGM2",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm3",
+                            "value": "PGM3",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm4",
+                            "value": "PGM4",
+                            "type": "active"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "automation": {
+        "conditions": [],
+        "actions": [
+            {
+                "label": "Partition Commands:",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "panicfire",
+                            "value": "Panic Fire",
+                            "type": "active"
+                        },
+                        {
+                            "key": "panicamb",
+                            "value": "Panic Ambulance",
+                            "type": "active"
+                        },
+                        {
+                            "key": "panicpolice",
+                            "value": "Panic Police",
+                            "type": "active"
+                        },
+                        {
+                            "key": "instantstay",
+                            "value": "Arm-Stay Instant",
+                            "type": "active"
+                        },
+                        {
+                            "key": "instantaway",
+                            "value": "Arm-Away Instant",
+                            "type": "active"
+                        },
+                        {
+                            "key": "togglenight",
+                            "value": "Toggle Night Mode",
+                            "type": "active"
+                        },
+                        {
+                            "key": "togglechime",
+                            "value": "Toggle Chime",
+                            "type": "active"
+                        },
+                        {
+                            "key": "refresh",
+                            "value": "Refresh",
+                            "type": "active"
+                        },
+                        {
+                            "key": "reset",
+                            "value": "Reset",
+                            "type": "active"
+                        },
+                        {
+                            "key": "armstay",
+                            "value": "Arm Stay",
+                            "type": "active"
+                        },
+                        {
+                            "key": "armaway",
+                            "value": "Arm Away",
+                            "type": "active"
+                        },
+                        {
+                            "key": "disarm",
+                            "value": "Disarm",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm1",
+                            "value": "PGM1",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm2",
+                            "value": "PGM2",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm3",
+                            "value": "PGM3",
+                            "type": "active"
+                        },
+                        {
+                            "key": "pgm4",
+                            "value": "PGM4",
+                            "type": "active"
+                        }
+                    ],
+                    "command": "setPartitionCommand",
+                    "argumentType": "string"
+                }
+            }
+        ]
+    },
+    "id": "partyvoice23922.partitioncommand3",
+    "version": 1
+}

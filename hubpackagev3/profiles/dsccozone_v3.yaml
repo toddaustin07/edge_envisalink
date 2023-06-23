@@ -1,0 +1,17 @@
+name: DSC.cozone.v3
+components:
+- id: main
+  label: "CO Detector Zone"
+  capabilities:
+    - id: carbonMonoxideDetector
+      version: 1
+    - id: partyvoice23922.costatus
+      version: 1
+    - id: partyvoice23922.zonebypass3a
+      version: 1
+  categories:
+    - name: SmokeDetector
+metadata:
+  vid: 8d2c179f-b8a6-3e0e-80f7-4023a374118d
+  mnmn: fE4b
+

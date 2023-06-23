@@ -1,0 +1,51 @@
+id: partyvoice23922.zonebypass3a
+version: 1
+status: proposed
+name: zonebypass3a
+ephemeral: false
+attributes:
+  zoneBypass:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+          enum:
+            - 'On'
+            - 'Off'
+      additionalProperties: false
+      required:
+        - value
+    setter: setZoneBypass
+    enumCommands:
+      - command: switchOn
+        value: 'On'
+      - command: switchOff
+        value: 'Off'
+  mylabel:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+      additionalProperties: false
+      required:
+        - value
+    enumCommands: []
+commands:
+  setZoneBypass:
+    name: setZoneBypass
+    arguments:
+      - name: value
+        optional: false
+        schema:
+          type: string
+          enum:
+            - 'On'
+            - 'Off'
+  switchOff:
+    name: switchOff
+    arguments: []
+  switchOn:
+    name: switchOn
+    arguments: []

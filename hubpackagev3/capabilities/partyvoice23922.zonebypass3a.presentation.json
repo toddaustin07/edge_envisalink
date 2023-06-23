@@ -1,0 +1,85 @@
+{
+    "dashboard": {
+        "states": [],
+        "actions": []
+    },
+    "detailView": [
+        {
+            "label": "{{i18n.label}}",
+            "displayType": "toggleSwitch",
+            "toggleSwitch": {
+                "command": {
+                    "on": "switchOn",
+                    "off": "switchOff"
+                },
+                "state": {
+                    "value": "zoneBypass.value",
+                    "valueType": "string",
+                    "on": "On",
+                    "off": "Off",
+                    "label": "{{mylabel.value}}",
+                    "alternatives": [
+                        {
+                            "key": "On",
+                            "value": "On",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Off",
+                            "value": "Off",
+                            "type": "inactive"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "label": "Zone Bypass Status",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "On",
+                            "value": "On",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Off",
+                            "value": "Off",
+                            "type": "inactive"
+                        }
+                    ],
+                    "value": "zoneBypass.value",
+                    "valueType": "string"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "label": "Zone Bypass Status",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "On",
+                            "value": "On",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Off",
+                            "value": "Off",
+                            "type": "inactive"
+                        }
+                    ],
+                    "command": "setZoneBypass",
+                    "argumentType": "string"
+                }
+            }
+        ]
+    },
+    "id": "partyvoice23922.zonebypass3a",
+    "version": 1
+}

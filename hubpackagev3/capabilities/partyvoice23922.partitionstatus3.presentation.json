@@ -1,0 +1,81 @@
+{
+    "dashboard": {
+        "states": [
+            {
+                "label": "{{partStatus.value}}"
+            }
+        ],
+        "actions": []
+    },
+    "detailView": [
+        {
+            "label": "{{i18n.label}}",
+            "displayType": "state",
+            "state": {
+                "label": "{{partStatus.value}}"
+            }
+        }
+    ],
+    "automation": {
+        "conditions": [
+            {
+                "label": "Partition Status",
+                "displayType": "list",
+                "list": {
+                    "alternatives": [
+                        {
+                            "key": "Armed-away",
+                            "value": "Armed-away",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Armed-away (instant)",
+                            "value": "Armed-away (instant)",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Armed-stay",
+                            "value": "Armed-stay",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Armed-stay (instant)",
+                            "value": "Armed-stay (instant)",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Disarmed",
+                            "value": "Disarmed",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Ready",
+                            "value": "Ready",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Entry delay",
+                            "value": "Entry delay",
+                            "type": "active"
+                        },
+                        {
+                            "key": "Exit delay",
+                            "value": "Exit delay",
+                            "type": "active"
+                        },
+                        {
+                            "key": "ALARM!!",
+                            "value": "ALARM!!",
+                            "type": "active"
+                        }
+                    ],
+                    "value": "partStatus.value",
+                    "valueType": "string"
+                }
+            }
+        ],
+        "actions": []
+    },
+    "id": "partyvoice23922.partitionstatus3",
+    "version": 1
+}
