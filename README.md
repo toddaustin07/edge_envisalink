@@ -149,7 +149,7 @@ Telephone Line Fault
 * component:  main
 * capability:  partyvoice23922.partitioncommand3
 * command: setPartitionCommand
-* values:
+* valid argument values:
 ```
 armstay
 armaway
@@ -169,7 +169,7 @@ pgm3
 pgm4
 ```
 
-### Enisalink connection monitoring
+### Envisalink connection monitoring
 A new feature in the V3.0 driver is the periodic monitoring of the network connection to the Envisalink.  The frequency of the check can be configured in the primary panel device Settings screen under 'Periodic Connection Check'.  This can be set for as often as every 5 minutes (default is every 15 minutes).  If during this periodic check the Envisalink is not responding, all partition and zone devices will go into an offline state and the partition status will be set to 'Offline', enabling automations to be triggered.  The driver will then continuously try to reconnect with the Envisalink every 15 seconds.  Once connection is re-established, all devices will revert to online status and the partition status will be refreshed with the latest state reported by the DSC.
 
 ### Auxilary siren triggering
