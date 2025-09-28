@@ -73,11 +73,17 @@ verboseTroubleText =  {
 
 -- Custom Capabilities (global)
 
-cap_partitionstatus = capabilities["partyvoice23922.partitionstatus3a"]
+PARTITIONSTATUS_CAPNAME = "partyvoice23922.partitionstatus3a"
+AWAYSWITCH_CAPNAME = "partyvoice23922.dscawayswitch3"
+STAYSWITCH_CAPNAME = "partyvoice23922.dscstayswitch3"
+TROUBLETYPE_CAPNAME = "partyvoice23922.dsctroubletype3a"
+
+cap_partitionstatus = capabilities[PARTITIONSTATUS_CAPNAME]
 cap_dscdashswitch = capabilities["partyvoice23922.dscdashswitch3"]
 cap_ledstatus = capabilities["partyvoice23922.ledstatus2"]
-cap_dscstayswitch = capabilities["partyvoice23922.dscstayswitch3"]
-cap_dscawayswitch = capabilities["partyvoice23922.dscawayswitch3"]
+
+cap_dscstayswitch = capabilities[STAYSWITCH_CAPNAME]
+cap_dscawayswitch = capabilities[AWAYSWITCH_CAPNAME]
 cap_partitioncommand = capabilities["partyvoice23922.partitioncommand3"]
 cap_dscselectswitch = capabilities["partyvoice23922.dscselectswitch3"]
 cap_contactstatus = capabilities["partyvoice23922.contactstatus"]
@@ -88,8 +94,8 @@ cap_waterstatus = capabilities["partyvoice23922.waterstatus"]
 cap_zonebypass = capabilities["partyvoice23922.zonebypass3a"]
 
 cap_username = capabilities["partyvoice23922.dscuser"]
-troubletype_capname = "partyvoice23922.dsctroubletype3a"
-cap_trouble = capabilities[troubletype_capname]
+
+cap_trouble = capabilities[TROUBLETYPE_CAPNAME]
 
 -- Module variables
 local initialized = false
@@ -214,6 +220,7 @@ local function update_usermap(device)
   end
 
 end
+
 
 
 -- Setup config preferences for Envisalink connection & DSC alarm code
@@ -413,6 +420,14 @@ local function handle_partcmd(driver, device, command)
     cmd_armstay(device)
   elseif partcmd == 'disarm' then
     cmd_disarm(device)
+  elseif partcmd == 'refresh' then
+    evlClient.send_command('001', '')
+    if (device.state_cache.main[STAYSWITCH_CAPNAME].staySwitch.value == 'Off') and
+			 (device.state_cache.main[AWAYSWITCH_CAPNAME].awaySwitch.value == 'Off') then
+      evlClient.refresh_bypass(partition, 6)
+    else
+      log.info ('Request ignored - system is armed')
+    end
   else
     evlClient.send_command(partcmdtable[partcmd][1], partcmdtable[partcmd][2])
     
@@ -442,34 +457,55 @@ local function handle_zonebypass(_, device, command)
 
   log.debug(string.format('Bypass command for %s: cmd: [%s], value: [%s]', device.label, command.command, command.args.value))
   
-  local action = 'off'
+  local zonenumber, partition = device.device_network_id:match('DSC:Z(%d+)_(%d)')
   
-  if (command.command == 'setZoneBypass') and (command.args.value == 'On') then
-    action = 'on'
-  elseif command.command == 'switchOn' then
-    action = 'on'
-  end
   
-  --[[
-  if action == 'on' then
-    device:emit_event(cap_zonebypass.zoneBypass('On', { visibility = { displayed = false } })
-  else
-    device:emit_event(cap_zonebypass.zoneBypass('Off', { visibility = { displayed = false } })
+  
+  
+  
+  -- Ignore zone bypass request if system is armed (otherwise this will have unintended consequences)
+  local partitiondevice = evlClient.get_partition_device(partition)
+  
+  if (partitiondevice.state_cache.main[STAYSWITCH_CAPNAME].staySwitch.value == 'On') or
+		 (partitiondevice.state_cache.main[AWAYSWITCH_CAPNAME].awaySwitch.value == 'On') then
+    log.info ('Request ignored - system is armed')
+    
+    local action = 'Off'
+    if (command.command == 'setZoneBypass') and (command.args.value == 'On') then
+      action = 'On'
+    elseif command.command == 'switchOn' then
+      action = 'On'
+    end
+    
+    local revertcmd = 'Off'
+    if action == 'Off' then
+      revertcmd = 'On'
+    end
+   
+    device:emit_event(cap_zonebypass.zoneBypass(action, { visibility = { displayed = false } }))
+   
+    evlDriver:call_with_delay(1, function()
+        device:emit_event(cap_zonebypass.zoneBypass(revertcmd, { visibility = { displayed = false } }))
+      end)
+    return
   end
-  --]]
+  --
+  
+  
   device:emit_event(cap_zonebypass.mylabel('Toggling Bypass...'))
-  
-  local zonenumber = device.device_network_id:match('DSC:Z(%d+)')
-  local partition = device.device_network_id:match('DSC:Z%d+_(%d+)')
   
   if string.len(zonenumber) == 1 then
     zonenumber = '0' .. zonenumber
   end
   
   log.debug (string.format('Toggling Bypass for Partition %s, Zone %s', partition, zonenumber))
-  evlClient.send_command('071', partition .. '*1' .. zonenumber .. '#')
+  evlClient.send_command('071', partition .. '*1')
+  evlDriver:call_with_delay(2.5, function()
+      evlClient.send_command('071', partition .. zonenumber .. '#')
+    end)
   
 end
+
 
 local function handle_siren(_, device, command)
 
@@ -912,7 +948,7 @@ evlDriver = Driver("evlDriver", {
   }
 })
 
-log.info ('v3.0 Driver Started: supporting EyezOn EnvisaLink 2DS/3/4')
+log.info ('v3.11 Driver Started: supporting EyezOn EnvisaLink 2DS/3/4')
 
 local device_list = evlDriver:get_devices()
 total_devices = #device_list

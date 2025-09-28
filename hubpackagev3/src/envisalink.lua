@@ -82,6 +82,8 @@ local function connect()
 
 	assert(client:bind(listen_ip, listen_port), "LAN socket setsockname")
 
+	assert(client:setoption('keepalive', true))
+
 	local ret, msg = client:connect(conf.envisalink.ip, conf.envisalink.port)
 	
 	if ret == nil then
@@ -225,6 +227,51 @@ local function getusername(parameters)
 end
 
 
+local function get_partition_device(partition)
+
+  local device_list = evlDriver:get_devices()
+
+  for _, device in ipairs(device_list) do
+		if device.device_network_id:match('^DSC:P(%d)') == partition then
+      return device
+    end
+  end
+
+end
+
+
+local function refresh_bypass(partition, delay)
+
+	local partstr = tostring(partition)
+	
+	evlDriver:call_with_delay(delay, function()
+			send_command('071', partstr .. '*1')
+			evlDriver:call_with_delay(3, function()
+					send_command('071', partstr .. '#')
+				end)
+		end)
+
+end
+
+
+local function refresh_all()
+
+	send_command('001', '', true, true)
+	
+	evlDriver:call_with_delay(6, function()
+			for partnum = 1, #conf.partitions do
+				local partitiondevice = get_partition_device(tostring(partnum))
+				if (partitiondevice.state_cache.main[STAYSWITCH_CAPNAME].staySwitch.value == 'Off') and
+					 (partitiondevice.state_cache.main[AWAYSWITCH_CAPNAME].awaySwitch.value == 'Off') then
+					refresh_bypass(partnum, partnum * 5)
+				else
+					log.info ('Bypass refresh skipped since system is armed')
+				end
+			end
+		end)
+end
+
+
 local function build_event_table(code, parms, event, message)
 
 	local update = {}
@@ -365,10 +412,11 @@ local function build_event_table(code, parms, event, message)
 		elseif event.type == 'partition' then
 			
 			local partnum = tonumber(parameters:sub(1,1))
+
 			if conf.partitions[partnum] then
-				if code == 655 then
-					send_command('071', '1*1#')						-- refresh zone bypass status
-				end
+				--if code == 655 then
+				--	refresh_bypass(partnum, 2.5)				-- this has proven to be unreliable
+				--end
 				
 				local codeMap = {
 													[650] = 'ready',
@@ -476,7 +524,7 @@ local function handle_login(code, parameters, event, message)
 	elseif parameters == '1' then
 		log.info('Successfully logged in to Envisalink; synching devices...')
 		loggedin = true
-		send_command('001', '', true, true)
+		refresh_all()
 		
 	elseif parameters == '0' then
 		log.error ('Envisalink login failed - incorrect password')
@@ -738,6 +786,12 @@ local function periodic_check()
     send_command('000', '')
     -- This timer will be canceled when poll command acknowledgement is received
     timers.pollreset = evlDriver:call_with_delay(5, resetconnection)
+    
+  elseif timers.reconnect == nil then
+		-- if for some reason we're no longer connected AND a re-connect timer isn't active, 
+		-- then reset the connection
+		log.warn('Periodic check discovered Envisalink not connected')
+		resetconnection()  
   end
 
 end
@@ -755,5 +809,7 @@ return {
 	is_connected = is_connected,
 	is_loggedin = is_loggedin,
   periodic_check = periodic_check,
+  refresh_bypass = refresh_bypass,
+  get_partition_device = get_partition_device,
 }
 

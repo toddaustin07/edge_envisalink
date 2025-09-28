@@ -1,4 +1,4 @@
-name: 'Envisalink 3.0'
+name: 'Envisalink 3.11'
 packageKey: 'envisalinkv3.0'
 permissions:
     lan: {}

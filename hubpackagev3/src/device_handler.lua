@@ -180,6 +180,21 @@ local function proc_bypass_msg(msg)
 end
 
 
+local function reset_bypass(partition)
+
+	local device_list = evlDriver:get_devices()
+
+  for _, device in ipairs(device_list) do
+		local partnum = device.device_network_id:match('^DSC:Z%d+_(%d)')
+		if partnum == partition then
+			device:emit_event(cap_zonebypass.mylabel('Bypass is off'))
+			device:emit_event(cap_zonebypass.zoneBypass('Off', { visibility = { displayed = false } }))
+		end
+	end
+
+end
+
+
 local function arm_reset(device)
 	
 	device:emit_event(cap_dscstayswitch.staySwitch('Off'))
@@ -197,10 +212,10 @@ local function update_troublemsg(troubletext, options)
   
 		if device.device_network_id:find('DSC:P', 1) then
 			device:emit_event(cap_trouble.troubleType(troubletext, options))
-			if troubletext == ' ' then
-				device:emit_event(cap_partitionstatus.partStatus('Trouble restore'))
-				STpartitionstatus[tonumber(device.device_network_id:match('DSC:P(%d)'))] = 'Trouble restore'
-			end
+			--if troubletext == ' ' then
+				--device:emit_event(cap_partitionstatus.partStatus('Trouble restore'))
+				--STpartitionstatus[tonumber(device.device_network_id:match('DSC:P(%d)'))] = 'Trouble restore'
+			--end
 		end
 	end
 
@@ -232,10 +247,10 @@ end
 
 local function proc_verbosetrouble(device, msg)
 
-	log.debug ('Current trouble type: ', device.state_cache.main[troubletype_capname].troubleType.value)
+	log.debug ('Current trouble type: ', device.state_cache.main[TROUBLETYPE_CAPNAME].troubleType.value)
 	-- If Battery or Bell trouble type already set, then ignore verbose trouble (probably a 'Service Required')
-	if (device.state_cache.main[troubletype_capname].troubleType.value == 'Battery') or
-	   (device.state_cache.main[troubletype_capname].troubleType.value == 'Bell') then
+	if (device.state_cache.main[TROUBLETYPE_CAPNAME].troubleType.value == 'Battery') or
+	   (device.state_cache.main[TROUBLETYPE_CAPNAME].troubleType.value == 'Bell') then
 	  return
 	end
 
@@ -376,6 +391,7 @@ local function proc_partition_msg(msg)
 					elseif (msg.status == 'disarm') then
 						arm_reset(device)
 						device:emit_event(cap_partitionstatus.partStatus(display_status))
+						reset_bypass(msg.value)
 					
 					else
 						if (msg.status ~= 'armed') then
@@ -394,24 +410,22 @@ local function proc_partition_msg(msg)
 						device:emit_event(cap_username.username(msg.username))
 					end
 					
-					if (msg.status == 'exitdelay') then
-						device:emit_event(cap_username.username(' ',{visibility={displayed=false}}))
-					end
-					
-					
-
-					-- If arming, need to reset zones with alarm memory
 					
 					if msg.status == 'exitdelay' then			
+					
+						-- Clear last username
+						device:emit_event(cap_username.username(' ',{visibility={displayed=false}}))
+						
+						-- Reset any zones with alarm memory
 						
 						for zonenum, zone in ipairs(conf.zones) do
 							if (zone.partition == tonumber(msg.value)) then
 								if ALARMMEMORY[zonenum] == true then
 									local _msg = { ['value'] = tostring(zonenum) }
-									if (zone.type == 'contact') or (zone.type == 'motion') or (zone.type == 'water') then
+									if (zone.type == 'contact') then
 										emitZoneStatus(_msg, 'Closed')
 									elseif (zone.type == 'motion') then
-										emitZoneStatus(_msg, 'No Motion')
+										emitZoneStatus(_msg, 'No motion')
 									elseif (zone.type == 'smoke') or (zone.type == 'co') then
 										emitZoneStatus(_msg, 'Clear')
 									elseif (zone.type == 'water') then
@@ -565,8 +579,10 @@ local function onoffline(status)
 			device:online()
 			
 		elseif status == 'offline' then
+		  -- Note:  Offline status will be displayed for partition 1 only
 			if device.device_network_id:find('DSC:P', 1, 'plaintext') then
 				device:emit_event(cap_partitionstatus.partStatus('Offline'))
+				STpartitionstatus[1] = 'Offline'
 			end
 			device:offline()
 		end
