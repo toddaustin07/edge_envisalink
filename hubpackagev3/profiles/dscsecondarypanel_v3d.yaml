@@ -27,9 +27,6 @@ components:
       version: 1
   categories:
     - name: SecurityPanel
-metadata:
-  vid: f1608f6c-d997-30cb-a9e9-03bf77fb8dff
-  mnmn: fE4b
 preferences:
   - title: "Set arm mode from STHM"
     name: sthmsynch

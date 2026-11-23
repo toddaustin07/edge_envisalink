@@ -11,7 +11,4 @@ components:
       version: 1
   categories:
     - name: LeakSensor
-metadata:
-  vid: d6441e30-a323-3797-88bf-26c2bf7f687f
-  mnmn: fE4b
 

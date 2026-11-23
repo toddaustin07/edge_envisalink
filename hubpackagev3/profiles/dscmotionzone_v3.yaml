@@ -11,7 +11,4 @@ components:
       version: 1
   categories:
     - name: MotionSensor
-metadata:
-  vid: fb94c43e-4664-3c93-9a01-f2b753b8083d
-  mnmn: fE4b
 
